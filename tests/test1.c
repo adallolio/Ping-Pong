@@ -1,7 +1,7 @@
 // Exercise 1 - test
 // Alberto Dallolio
 
-
+#define F_CPU 4915200 //49152MHz
 #include <avr/io.h>
 #include <util/delay.h>
 
