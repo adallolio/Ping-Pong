@@ -14,11 +14,11 @@ void main(void){
 	USART_Init ( MYUBRR );
 
 	while(1){
-		message = UART_rec();
-		printf("%c\n", msg);
+		message = USART_rec();
+		printf("%c\n", message);
 		
-		//UART_trans('aooooooooooooooo');
-		//printf("Is it transmitted?!?!?!?!?!");
+		USART_trans('a');
+		printf("Is it transmitted?!?!?!?!?!");
 		
 		_delay_ms(1000);
 	}
@@ -40,7 +40,7 @@ void USART_Init( unsigned int ubrr ){
 }
 
 // Function for reading received data.
-unsigned char UART_rec(void){
+unsigned char USART_rec(void){
 	/* Wait for data to be received */
 	while (!(UCSR0A & (1<<RXC0)));
 	/* Get and return received data from buffer */
@@ -48,7 +48,7 @@ unsigned char UART_rec(void){
 }
 
 // Function to read transmitted data.
-void UART_trans(unsigned char data){
+void USART_trans(unsigned char data){
 	/* Wait for empty transmit buffer */
 	while (!( UCSR0A & (1<<UDRE0)));
 	/* Put data into buffer, sends the data */
