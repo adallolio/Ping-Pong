@@ -16,7 +16,7 @@ entity address_decoder is
         oled_dc     : Out std_logic
     );
     
-    attribute LOC : string;    
+    attribute LOC : string;
     attribute LOC of ram_cs     : signal is "P19";
     attribute LOC of adc_cs     : signal is "P18";
     attribute LOC of oled_cs    : signal is "P17";
