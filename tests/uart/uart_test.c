@@ -4,6 +4,7 @@
 #include <avr/io.h>
 #include <stdio.h>
 #include <util/delay.h>
+#include "bit_manipulation.h"
 
 #define BAUD_RATE 9600
 
@@ -31,7 +32,8 @@ void UART_Init(unsigned long clock){
 // Function for reading received data.
 unsigned char UART_receive(void){
 	/* Wait for data to be received */
-	while (!(UCSR0A & (1<<RXC0)));
+	//while (!(UCSR0A & (1<<RXC0)));
+	loop_until_bit_is_set(UCSR0A,RXC0);
 	/* Get and return received data from buffer */
 	return UDR0;
 }
@@ -39,7 +41,9 @@ unsigned char UART_receive(void){
 // Function to read transmitted data.
 void UART_send(unsigned char data){
 	/* Wait for empty transmit buffer */
-	while (!( UCSR0A & (1<<UDRE0)));
+	//while (!( UCSR0A & (1<<UDRE0)));
+	
+	loop_until_bit_is_set(UCSR0A,UDRE0);
 	
 	/* Put data into buffer, sends the data */
 	UDR0 = data;
