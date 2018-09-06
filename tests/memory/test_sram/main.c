@@ -9,6 +9,7 @@
 #include <util/delay.h>
 #include "uart.h"
 #include "sram.h"
+#include "../memory_mapping.h"
 
 int main(void)
 {

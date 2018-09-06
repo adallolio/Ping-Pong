@@ -1,6 +1,7 @@
 // SRAM
 
 #include "sram.h"
+#include "../memory_mapping.h"
 #include <avr/io.h>
 #include <stdlib.h>
 #include <stdio.h>
@@ -15,7 +16,7 @@ void SRAM_Init(void){
 
 void SRAM_Test(void)
 {
-	volatile char *ext_ram = (char *) 0x1800; // Start address for the SRAM
+	volatile char *ext_ram = (char *) SRAM_DATA_ADDRESS; // Start address for the SRAM
 	uint16_t ext_ram_size = 0x800;
 	uint16_t write_errors = 0;
 	uint16_t retrieval_errors = 0;
