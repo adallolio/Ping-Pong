@@ -14,14 +14,14 @@ int main(void)
 	DDRE = 0xFF;
 
 	// Set PE1
-	PORTE |= (1 <<PE1);
+	PORTE |= (1<<PE1);
 	
 	while(1)
 	{
 		// Toggle A0-A7.
 		PORTA |= (1 << PA0)|(1 << PA1)|(1 << PA2)|(1 << PA3)|(1 << PA4)|(1 << PA5)|(1 << PA6)|(1 << PA7);
 		
-		_delay_ms(1000);
+		_delay_ms(100);
 		
 		PORTA &= ~(1 << PA0);
 		PORTA &= ~(1 << PA1);
@@ -32,7 +32,7 @@ int main(void)
 		PORTA &= ~(1 << PA6);
 		PORTA &= ~(1 << PA7);
 		
-		_delay_ms(1000);
+		_delay_ms(100);
 		
 		
 	}

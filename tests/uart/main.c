@@ -13,12 +13,14 @@ void main(void){
 
 	unsigned long cpu_speed = F_CPU;
     UART_Init(cpu_speed);
+    unsigned char b;
 
 	while(1){
-		//message = UART_receive();
-		//printf("%c\n", message);
-		
-		UART_send('a');
+		b = UART_receive();
+		fdevopen(UART_send, UART_receive);
+		printf("\r\nHello World\r\n");
+
+		UART_send(b+1);
 		//printf("Is it transmitted?!?!?!?!?!");
 		
 		_delay_ms(100);
