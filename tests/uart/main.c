@@ -17,15 +17,12 @@ void main(void){
 
 	while(1){
 		b = UART_receive();
+		
 		fdevopen(UART_send, UART_receive);
 		printf("\r\nHello World\r\n");
 
 		UART_send(b+1);
-		//printf("Is it transmitted?!?!?!?!?!");
 		
 		_delay_ms(100);
-
-		//stdout = &uart_io;
-		//stdin = &uart_io;
 	}
 }

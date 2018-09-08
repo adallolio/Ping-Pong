@@ -5,8 +5,8 @@
 #define UART_TEST_H
 
 void UART_Init(unsigned long clock);
-int UART_send(unsigned char data);
-int UART_receive(void);
+void UART_send(unsigned char data);
+unsigned char UART_receive();
 
 
 //#define F_CPU 4915200UL // Informs the compiler: how many steps in one second.
