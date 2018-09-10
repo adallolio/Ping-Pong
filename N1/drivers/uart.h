@@ -1,8 +1,7 @@
-// TEST UART COMM
-// Alberto Dallolio
+// Alberto Dallolio - Uart Communication
 
-#ifndef UART_H
-#define UART_H
+#ifndef UART_H_
+#define UART_H_
 
 void UART_Init(unsigned long clock);
 void UART_send(unsigned char data);

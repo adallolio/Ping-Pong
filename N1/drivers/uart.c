@@ -1,10 +1,9 @@
-// TEST DRIVER COMM.
-// Alberto Dallolio
+// Alberto Dallolio - Uart Communication
 
 #include <avr/io.h>
 #include <stdio.h>
 #include <util/delay.h>
-//#include "bit_manipulation.h"
+//#include "../bit_manipulation.h"
 
 #define BAUD_RATE 9600
 

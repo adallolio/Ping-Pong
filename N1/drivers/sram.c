@@ -1,7 +1,7 @@
-// SRAM
+// Alberto Dallolio - SRAM Mapping
 
 #include "sram.h"
-#include "../memory_mapping.h"
+#include "../misc/memory_mapping.h"
 #include <avr/io.h>
 #include <stdlib.h>
 #include <stdio.h>
