@@ -19,7 +19,7 @@ void main(void){
 		b = UART_receive();
 		
 		fdevopen(UART_send, UART_receive);
-		printf("\r\nHello World\r\n");
+		printf("\n\rHello World\n\r");
 
 		UART_send(b+1);
 		
