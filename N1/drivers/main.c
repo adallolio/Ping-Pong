@@ -21,15 +21,24 @@ int main(void)
 	uint8_t x;
 	uint8_t y;
 	ADC_Init();
+
+	_delay_ms(15000);
 	
+	Joy_Init();
+
+	_delay_ms(3000);
+
 	while(1){
 		//_delay_ms(10000);
-		//Joy_getDir();
+		Joy_getPos();
+		
+		/*
 		x = ADC_Read('x');
 		printf("X position: %d\n\r", x);
 		y = ADC_Read('y');
 		printf("Y position: %d\n\r", y);
-		_delay_ms(5000);
+		*/
+		_delay_ms(2000);
 	}
 
 		//uint8_t pos_x = ADC_Read('x');

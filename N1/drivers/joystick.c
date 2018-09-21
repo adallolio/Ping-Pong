@@ -13,7 +13,13 @@
 #include <stdlib.h>
 #include <stdio.h>
 
-Joy_position central_pos;
+//Joy_position central_pos;
+
+
+static uint8_t max_pos_x = 255;
+static uint8_t max_pos_y = 255;
+static uint8_t x_off;
+static uint8_t y_off;
 
 
 // Read ADC.
@@ -31,26 +37,39 @@ Joy_position Joy_Read(){
 
 // Calibrate Joystick.
 void Joy_Cal() {
-	
-	central_pos = Joy_Read();
 
-	
-	int x_off;
-	int y_off;
+	//central_pos = Joy_Read(); // to be used by getPos.
+
 	Joy_position pos;
 	Joy_position pos_next;
 
+	/*
 	printf("Press c to start the Joystick calibration ... \n\r");
 	unsigned char character;
-	
-	while(character != 'c'){
+	while(1){
 		character = UART_receive();
+		if(character == 'c')
+			break;
 	}
+	*/
 
 	printf("Calibration started ... \n\r");
 	_delay_ms(1000);
 	printf("Acquiring central position ... \n\r");
+	pos.y = ADC_Read('y');
+	_delay_ms(1);
+	pos.x = ADC_Read('x');
+	_delay_ms(2000);
+	printf("Compute offset ... \n\r");
+	x_off = pos.x - 127;
+	y_off = pos.y - 127;
+
+	printf("X offset: %d\n\r", x_off);
+	printf("Y offset: %d\n\r", y_off);
+	printf("Calibrated X position: %d\n\r", pos.x-x_off);
+	printf("Calibrated Y position: %d\n\r", pos.y-y_off);
 	
+	/* CALIBRATION UPON 3 READING STEPS - Fails because bits always slightly change!!
 	_delay_ms(2000);
 	printf("First reading \n\r");
 	pos.y = ADC_Read('y');
@@ -62,8 +81,11 @@ void Joy_Cal() {
 	_delay_ms(1);
 	pos_next.x = ADC_Read('x');
 
-	if(pos.y != pos_next.y || pos.x != pos_next.x)
+	if(pos.y != pos_next.y || pos.x != pos_next.x) {
+		printf("The position changed! Did you move it?! \n\r");
+		printf("Joystick NOT calibrated! \n\r");
 		return;
+	}
 
 	_delay_ms(2000);
 	printf("Third reading \n\r");
@@ -71,14 +93,13 @@ void Joy_Cal() {
 	_delay_ms(1);
 	pos.x = ADC_Read('x');
 
-	if(pos.y != pos_next.y || pos.x != pos_next.x)
+	if(pos.y != pos_next.y || pos.x != pos_next.x){
+		printf("The position changed! Did you move it?! \n\r");
+		printf("Joystick NOT calibrated! \n\r");
 		return;
+	}
 
-	_delay_ms(2000);
-	printf("Compute offset ... \n\r");
-	x_off = pos.x - 127;
-	y_off = pos.y - 127;
-	
+	*/
 
 	// Then I can apply the offset to all measurements!
 
@@ -90,7 +111,7 @@ void Joy_Init() {
 
 	// Calibrate the Joystick.
 	Joy_Cal();
-	printf("Joystick Central Position: %u, %u \n\r", central_pos.x, central_pos.y);
+	//printf("Joystick Central Position: %u, %u \n\r", central_pos.x, central_pos.y);
 
 	// Initialize joystick button as input: PORT B - pin 3.
 	//DDRB &= ~(1 << PINB3);
@@ -110,20 +131,27 @@ int Joy_Button() {
 Joy_position Joy_getPos()
 {
 	Joy_position curr_pos = Joy_Read();
+	Joy_position cal_pos;
+
+	cal_pos.x = curr_pos.x - x_off;
+	cal_pos.y = curr_pos.y - y_off;
+
+	printf("X offset aa: %d\n\r", x_off);
+	printf("Y offset aa: %d\n\r", y_off);
+	printf("CAL X: %d\n\r", cal_pos.x);
+	printf("CAL Y: %d\n\r", cal_pos.y);
+	printf("MAX X: %d\n\r", max_pos_x);
+	printf("MAX Y: %d\n\r", max_pos_y);
 	
 	Joy_position perc_pos;
 
 	// Compute percentage and trim pos x.
-	perc_pos.x = (curr_pos.x - central_pos.x) * 100 / central_pos.x;
-	if (perc_pos.x > 100) {perc_pos.x = 100;}
-	else if (perc_pos.x < -100) {perc_pos.x = -100;}
+	perc_pos.x = (cal_pos.x/max_pos_x)*100;
 
 	// Compute and trim pos y.
-	perc_pos.y = (curr_pos.y - central_pos.y) * 100 / central_pos.y;
-	if (perc_pos.y > 100) {perc_pos.y = 100;}
-	else if (perc_pos.y < -100) {perc_pos.y = -100;}
+	perc_pos.y = (cal_pos.y/max_pos_y)*100;
 
-	printf("Joystick Position in percentage: x=%u, y=%u \n\r", perc_pos.x, perc_pos.y);
+	printf("Joystick Position in percentage: x=%d, y=%d \n\r", perc_pos.x, perc_pos.y);
 
 	return perc_pos;
 }

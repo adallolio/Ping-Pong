@@ -17,7 +17,7 @@ int ADC_Init(void) {
 	return 0;
 }
 
-uint8_t ADC_Read(char ch){
+int ADC_Read(char ch){
  	
  	// Start address
 	volatile char *ext_adc = (char *) ADC_DATA_ADDRESS; 
