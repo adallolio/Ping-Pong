@@ -11,19 +11,17 @@
 //#include "misc/bit_manipulation.h"
 #include "../misc/macros.h"
 
-//#define CH_Y_POS 0
-//#define CH_X_POS 1
-
 int main(void)
-{
+{	
+	// Set and enable UART.
 	unsigned long cpu_speed = F_CPU;
     UART_Init(cpu_speed);
 	fdevopen(UART_send, UART_receive);
-	//SRAM_Init();
-	//SRAM_Test();
+	
 	uint8_t x;
 	uint8_t y;
 	ADC_Init();
+	
 	while(1){
 		//_delay_ms(10000);
 		//Joy_getDir();
@@ -45,7 +43,6 @@ int main(void)
 		//_delay_ms(1);
 		//uint8_t right = ADC_Read('r');
 		//printf("RIGHT SLIDER POSITION: %u \n\r", right);
-	
 
 	
 	return 0;

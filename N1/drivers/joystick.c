@@ -2,6 +2,7 @@
 
 #include "joystick.h"
 #include "adc.h"
+#include "uart.h"
 #include "../misc/macros.h"
 //#include "../misc/bit_manipulation.h"
 #include "../misc/memory_mapping.h"
@@ -30,7 +31,59 @@ Joy_position Joy_Read(){
 
 // Calibrate Joystick.
 void Joy_Cal() {
+	
 	central_pos = Joy_Read();
+
+	
+	int x_off;
+	int y_off;
+	Joy_position pos;
+	Joy_position pos_next;
+
+	printf("Press c to start the Joystick calibration ... \n\r");
+	unsigned char character;
+	
+	while(character != 'c'){
+		character = UART_receive();
+	}
+
+	printf("Calibration started ... \n\r");
+	_delay_ms(1000);
+	printf("Acquiring central position ... \n\r");
+	
+	_delay_ms(2000);
+	printf("First reading \n\r");
+	pos.y = ADC_Read('y');
+	_delay_ms(1);
+	pos.x = ADC_Read('x');
+	_delay_ms(2000);
+	printf("Second reading \n\r");
+	pos_next.y = ADC_Read('y');
+	_delay_ms(1);
+	pos_next.x = ADC_Read('x');
+
+	if(pos.y != pos_next.y || pos.x != pos_next.x)
+		return;
+
+	_delay_ms(2000);
+	printf("Third reading \n\r");
+	pos.y = ADC_Read('y');
+	_delay_ms(1);
+	pos.x = ADC_Read('x');
+
+	if(pos.y != pos_next.y || pos.x != pos_next.x)
+		return;
+
+	_delay_ms(2000);
+	printf("Compute offset ... \n\r");
+	x_off = pos.x - 127;
+	y_off = pos.y - 127;
+	
+
+	// Then I can apply the offset to all measurements!
+
+	// This can also be done by registering the central position and then applying the offset everytime I read.
+
 }
 
 void Joy_Init() {
@@ -60,7 +113,7 @@ Joy_position Joy_getPos()
 	
 	Joy_position perc_pos;
 
-	// Compute and trim pos x.
+	// Compute percentage and trim pos x.
 	perc_pos.x = (curr_pos.x - central_pos.x) * 100 / central_pos.x;
 	if (perc_pos.x > 100) {perc_pos.x = 100;}
 	else if (perc_pos.x < -100) {perc_pos.x = -100;}

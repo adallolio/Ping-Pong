@@ -3,8 +3,7 @@
 #ifndef JOYSTICK_H_
 #define JOYSTICK_H_
 
-//#define CH_Y_POS 0
-//#define CH_X_POS 1
+#include <avr/io.h>
 
 typedef enum {
 	CENTRAL = 0,
@@ -15,8 +14,8 @@ typedef enum {
 } Joy_direction;
 
 typedef struct JOY_pos {
-	int y;
-	int x;
+	uint8_t y;
+	uint8_t x;
 } Joy_position;
 
 
