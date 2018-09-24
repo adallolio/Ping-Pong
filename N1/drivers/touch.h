@@ -4,8 +4,8 @@
 #define BUTTON_LEFT 0
 #define BUTTON_RIGHT 1
 
-#define SLIDER_RIGHT_CH 2
-#define SLIDER_LEFT_CH 3
+#define SLIDER_RIGHT_CH 'r'
+#define SLIDER_LEFT_CH 'l'
 
 typedef struct Slider_pos {
 	int slider_left;

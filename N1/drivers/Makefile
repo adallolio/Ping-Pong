@@ -1,5 +1,5 @@
 # List all source files to be compiled; separate with space
-SOURCE_FILES := main.c uart.c adc.c sram.c joystick.c
+SOURCE_FILES := main.c uart.c adc.c sram.c joystick.c touch.c
 
 # Set this flag to "yes" (no quotes) to use JTAG; otherwise ISP (SPI) is used
 PROGRAM_WITH_JTAG := yes
@@ -16,7 +16,7 @@ TARGET_DEVICE := m162
 F_CPU := 4915200 # Modify if changing device!!
 
 CC := avr-gcc
-CFLAGS := -O -std=c11 -DF_CPU=$(F_CPU) -mmcu=$(TARGET_CPU)
+CFLAGS := -O -std=c11 -DF_CPU=$(F_CPU) -mmcu=$(TARGET_CPU) -u vfprintf -lprintf_flt
 
 OBJECT_FILES = $(SOURCE_FILES:%.c=$(BUILD_DIR)/%.o)
 

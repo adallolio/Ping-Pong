@@ -7,6 +7,7 @@
 //#include "drivers/sram.c"
 #include "adc.h"
 #include "joystick.h"
+#include "touch.h"
 #include "../misc/memory_mapping.h"
 //#include "misc/bit_manipulation.h"
 #include "../misc/macros.h"
@@ -18,40 +19,61 @@ int main(void)
     UART_Init(cpu_speed);
 	fdevopen(UART_send, UART_receive);
 	
-	uint8_t x;
-	uint8_t y;
+	// JOYSTICK
+	//uint8_t x;
+	//uint8_t y;
+	int btn;
+
+	// TOUCH
+	//uint8_t l;
+	//uint8_t r;
+	int touch_btn;
+
+	_delay_ms(5000);
+
 	ADC_Init();
-
-	_delay_ms(15000);
-	
 	Joy_Init();
+	//TOUCH_Init();
 
-	_delay_ms(3000);
+	//_delay_ms(3000);
 
+	
 	while(1){
 		//_delay_ms(10000);
-		Joy_getPos();
 		
-		/*
-		x = ADC_Read('x');
-		printf("X position: %d\n\r", x);
-		y = ADC_Read('y');
-		printf("Y position: %d\n\r", y);
-		*/
-		_delay_ms(2000);
-	}
+		// TEST JOYSTICK
+		//x = ADC_Read('x');
+		//printf("X position: %d\n\r", x);
+		//y = ADC_Read('y');
+		//printf("Y position: %d\n\r", y);
 
-		//uint8_t pos_x = ADC_Read('x');
-		//printf("X POSITION: %u \n\r", pos_x);
-		//_delay_ms(1);
-		//uint8_t pos_y = ADC_Read('y');
-		//printf("Y POSITION: %u \n\r", pos_y);
-		//_delay_ms(1);
-		//uint8_t left = ADC_Read('l');
-		//printf("LEFT SLIDER POSITION: %u \n\r", left);
-		//_delay_ms(1);
-		//uint8_t right = ADC_Read('r');
-		//printf("RIGHT SLIDER POSITION: %u \n\r", right);
+		Joy_getDir();
+		/*
+		btn = Joy_Button();
+		if(btn==0){
+			printf("Joystick Button Pressed!\n\r");
+		}
+		*/
+
+		
+		
+		// TEST TOUCH
+		//TOUCH_getPos();
+		/*
+		touch_btn = TOUCH_Button();
+		if(touch_btn==1){
+			printf("Touch Button Pressed!\n\r");
+		}
+		*/
+		
+		
+		//l = ADC_Read('l');
+		//printf("L: %d\n\r", l);
+		//r = ADC_Read('r');
+		//printf("R: %d\n\r", r);
+		
+		//_delay_ms(2000);
+	}
 
 	
 	return 0;

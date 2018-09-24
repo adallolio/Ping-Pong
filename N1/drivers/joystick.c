@@ -16,10 +16,12 @@
 //Joy_position central_pos;
 
 
-static uint8_t max_pos_x = 255;
-static uint8_t max_pos_y = 255;
-static uint8_t x_off;
-static uint8_t y_off;
+static int max_pos_x = 255;
+static int max_pos_y = 255;
+int x_off;
+int y_off;
+static int central_x = 127;
+static int central_y = 127;
 
 
 // Read ADC.
@@ -30,6 +32,8 @@ Joy_position Joy_Read(){
 	pos.y = ADC_Read('y');
 	_delay_ms(1);
 	pos.x = ADC_Read('x');
+	//printf("X position: %d\n\r", pos.x);
+	//printf("Y position: %d\n\r", pos.y);
 	
 	return pos;
 }
@@ -43,16 +47,6 @@ void Joy_Cal() {
 	Joy_position pos;
 	Joy_position pos_next;
 
-	/*
-	printf("Press c to start the Joystick calibration ... \n\r");
-	unsigned char character;
-	while(1){
-		character = UART_receive();
-		if(character == 'c')
-			break;
-	}
-	*/
-
 	printf("Calibration started ... \n\r");
 	_delay_ms(1000);
 	printf("Acquiring central position ... \n\r");
@@ -61,50 +55,16 @@ void Joy_Cal() {
 	pos.x = ADC_Read('x');
 	_delay_ms(2000);
 	printf("Compute offset ... \n\r");
-	x_off = pos.x - 127;
-	y_off = pos.y - 127;
+	x_off = abs(pos.x) - central_x;
+	y_off = abs(pos.y) - central_y;
 
 	printf("X offset: %d\n\r", x_off);
 	printf("Y offset: %d\n\r", y_off);
 	printf("Calibrated X position: %d\n\r", pos.x-x_off);
 	printf("Calibrated Y position: %d\n\r", pos.y-y_off);
-	
-	/* CALIBRATION UPON 3 READING STEPS - Fails because bits always slightly change!!
-	_delay_ms(2000);
-	printf("First reading \n\r");
-	pos.y = ADC_Read('y');
-	_delay_ms(1);
-	pos.x = ADC_Read('x');
-	_delay_ms(2000);
-	printf("Second reading \n\r");
-	pos_next.y = ADC_Read('y');
-	_delay_ms(1);
-	pos_next.x = ADC_Read('x');
 
-	if(pos.y != pos_next.y || pos.x != pos_next.x) {
-		printf("The position changed! Did you move it?! \n\r");
-		printf("Joystick NOT calibrated! \n\r");
-		return;
-	}
-
-	_delay_ms(2000);
-	printf("Third reading \n\r");
-	pos.y = ADC_Read('y');
-	_delay_ms(1);
-	pos.x = ADC_Read('x');
-
-	if(pos.y != pos_next.y || pos.x != pos_next.x){
-		printf("The position changed! Did you move it?! \n\r");
-		printf("Joystick NOT calibrated! \n\r");
-		return;
-	}
-
-	*/
-
-	// Then I can apply the offset to all measurements!
-
-	// This can also be done by registering the central position and then applying the offset everytime I read.
-
+	_delay_ms(3000);
+	printf("JOYSTICK CALIBRATED!\n\r");
 }
 
 void Joy_Init() {
@@ -114,17 +74,19 @@ void Joy_Init() {
 	//printf("Joystick Central Position: %u, %u \n\r", central_pos.x, central_pos.y);
 
 	// Initialize joystick button as input: PORT B - pin 3.
-	//DDRB &= ~(1 << PINB3);
+	DDRB &= ~(1 << PINB3);
 	//clear_bit(DDRB, PINB3);
 	
 	// Activate pull-up resistor for joystick button.
-	//PORTB |= (1 << PB3);
+	PORTB |= (1 << PB3);
 	//set_bit(PORTB, PB3);
 }
 
 int Joy_Button() {
-	return !(PINB & (1 << PINB3));
-	//return !(test_bit(PINB, PINB3));
+	if( !(PINB & (1 << PB3)) ) {
+		return 0;
+	}
+	return 1;
 }
 
 // Get Joystick position.
@@ -133,48 +95,70 @@ Joy_position Joy_getPos()
 	Joy_position curr_pos = Joy_Read();
 	Joy_position cal_pos;
 
-	cal_pos.x = curr_pos.x - x_off;
-	cal_pos.y = curr_pos.y - y_off;
+	//printf("curr X: %d\n\r", curr_pos.x);
+	//printf("curr Y: %d\n\r", curr_pos.y);
 
+	//cal_pos.x = abs(curr_pos.x) - x_off;
+	//cal_pos.y = abs(curr_pos.y) - y_off;
+
+	
+	//printf("CAL X: %d\n\r", cal_pos.x);
+	//printf("CAL Y: %d\n\r", cal_pos.y);
+	/*
 	printf("X offset aa: %d\n\r", x_off);
 	printf("Y offset aa: %d\n\r", y_off);
-	printf("CAL X: %d\n\r", cal_pos.x);
-	printf("CAL Y: %d\n\r", cal_pos.y);
 	printf("MAX X: %d\n\r", max_pos_x);
 	printf("MAX Y: %d\n\r", max_pos_y);
-	
-	Joy_position perc_pos;
+	*/
 
+	
+	float perc_pos_x;
+	float perc_pos_y;
+
+	
 	// Compute percentage and trim pos x.
-	perc_pos.x = (cal_pos.x/max_pos_x)*100;
+	perc_pos_x = (curr_pos.x/(float)max_pos_x)*100;
 
 	// Compute and trim pos y.
-	perc_pos.y = (cal_pos.y/max_pos_y)*100;
+	perc_pos_y = (curr_pos.y/(float)max_pos_y)*100;
 
-	printf("Joystick Position in percentage: x=%d, y=%d \n\r", perc_pos.x, perc_pos.y);
-
-	return perc_pos;
+	printf("Joystick Position in percentage: x=%.2f, y=%.2f \n\r", perc_pos_x, perc_pos_y);
+	
+	
+	return curr_pos;
 }
 
 // Get Joystick direction in human readable form.
-Joy_direction Joy_getDir()
-{
+Joy_direction Joy_getDir() {
+
 	Joy_position curr_pos = Joy_getPos();
 	int dir;
 	
-	if (abs(curr_pos.x) < 30 && abs(curr_pos.y) < 30) {
+	if (curr_pos.x < 134 && curr_pos.y < 134 && curr_pos.x > 120 && curr_pos.y > 120) {
 		dir=CENTRAL;
+		printf("Joystick Direction: CENTRAL\n\r");
 	}
-	else if (abs(curr_pos.x) > abs(curr_pos.y)){
-		if (curr_pos.x > 0) {dir=RIGHT;}
-		else {dir=LEFT;}
+	else if (curr_pos.x > curr_pos.y){
+		if (curr_pos.x > 240) {
+			dir=RIGHT;
+			printf("Joystick Direction: RIGHT\n\r");
+		}
 	}
-	else {
-		if (curr_pos.y > 0) {dir=UP;}
-		else {dir=DOWN;}
-	}
+	
+	if (curr_pos.x < 10) {
+			dir=LEFT;
+			printf("Joystick Direction: LEFT\n\r");
+		}
 
-	printf("Joystick Direction: %d\n\r", dir);
+	if (curr_pos.y > 240) {
+			dir=UP;
+			printf("Joystick Direction: UP\n\r");
+		}
+	
+	if (curr_pos.y < 10) {
+			dir=DOWN;
+			printf("Joystick Direction: DOWN\n\r");
+		}
 
 	return dir;
 }

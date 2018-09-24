@@ -6,6 +6,6 @@
 #include <avr/io.h>
 
 int ADC_Init(void);
-int ADC_Read(char ch);
+uint8_t ADC_Read(char ch);
 
 #endif /* ADC_H_ */

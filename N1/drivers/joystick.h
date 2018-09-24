@@ -14,8 +14,8 @@ typedef enum {
 } Joy_direction;
 
 typedef struct JOY_pos {
-	uint8_t y;
-	uint8_t x;
+	int y;
+	int x;
 } Joy_position;
 
 
