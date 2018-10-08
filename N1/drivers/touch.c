@@ -9,8 +9,8 @@
 #include <stdlib.h>
 #include <stdio.h>
 
-void TOUCH_Init(){
-	
+void TOUCH_Init() {
+
 	// Initialize PORT B - pin 1 and 2 as input
 	//clear_bit(DDRB, PINB1); // ? Are the correct ones.
 	(DDRB &= ~(1 << PB1));
@@ -20,8 +20,7 @@ void TOUCH_Init(){
 	printf("Touch Initialized!\n\r");
 }
 
-int TOUCH_Button()
-{	
+int TOUCH_Button() {	
 	/*
 	if (test_bit(PINB, PB1) || test_bit(PINB, PB2)){
 		return 1;
@@ -35,8 +34,7 @@ int TOUCH_Button()
 	return 0;
 }
 
-TOUCH_sliderPos TOUCH_Read()
-{
+TOUCH_sliderPos TOUCH_Read() {
 	TOUCH_sliderPos pos;
 	pos.slider_left = ADC_Read('l');
 	_delay_ms(1);
@@ -47,8 +45,7 @@ TOUCH_sliderPos TOUCH_Read()
 	return pos;
 }
 
-TOUCH_sliderPos TOUCH_getPos()
-{
+TOUCH_sliderPos TOUCH_getPos() {
 	TOUCH_sliderPos curr_pos = TOUCH_Read();
 
 	return curr_pos;

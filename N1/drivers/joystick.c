@@ -140,24 +140,24 @@ Joy_direction Joy_getDir() {
 	}
 	else if (curr_pos.x > curr_pos.y){
 		if (curr_pos.x > 240) {
-			dir=RIGHT;
-			printf("Joystick Direction: RIGHT\n\r");
+			dir=EAST;
+			printf("Joystick Direction: EAST\n\r");
 		}
 	}
 	
 	if (curr_pos.x < 10) {
-			dir=LEFT;
-			printf("Joystick Direction: LEFT\n\r");
+			dir=WEST;
+			printf("Joystick Direction: WEST\n\r");
 		}
 
 	if (curr_pos.y > 240) {
-			dir=UP;
-			printf("Joystick Direction: UP\n\r");
+			dir=NORTH;
+			printf("Joystick Direction: NORTH\n\r");
 		}
 	
 	if (curr_pos.y < 10) {
-			dir=DOWN;
-			printf("Joystick Direction: DOWN\n\r");
+			dir=SOUTH;
+			printf("Joystick Direction: SOUTH\n\r");
 		}
 
 	return dir;

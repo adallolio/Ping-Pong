@@ -7,10 +7,10 @@
 
 typedef enum {
 	CENTRAL = 0,
-	LEFT = 1,
-	RIGHT = 2,
-	UP = 3,
-	DOWN = 4
+	WEST = 1,
+	EAST = 2,
+	NORTH = 3,
+	SOUTH = 4
 } Joy_direction;
 
 typedef struct JOY_pos {

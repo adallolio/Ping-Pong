@@ -32,7 +32,7 @@ architecture behave of address_decoder is
 
     ram_cs <= a11; -- active high
 	adc_cs <=  NOT ( (NOT a11) AND a10); -- active low
-	oled_cs <= NOT ( (NOT a11) AND (NOT a10) AND (NOT a9) ); -- active low
-	oled_dc <= NOT ( (NOT a11) AND (NOT a10) AND a9 ); -- active low
+	oled_cs <= NOT ( (NOT a11) AND (NOT a10) ); -- active low
+	oled_dc <= a9; -- active low
 
 end behave;
