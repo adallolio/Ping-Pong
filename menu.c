@@ -7,6 +7,7 @@
 #include <stdlib.h>
 #include <string.h>
 #include <util/delay.h>
+#include <stdarg.h>
 
 state state_ = menu;
 int speed;
@@ -15,9 +16,11 @@ menu_item_info *currMenu;
 menu_item_info *currChild;
 int line;
 
-menu_item_info mainMenu, playGame, scores, settings, stop, normalSpeed, fastSpeed, clearScores, contrastLevel, contrastLow, contrastMedium, contrastHigh, invertScreen;
+menu_item_info mainMenu, playGame, scores, settings, stop;
+//normalSpeed, fastSpeed, clearScores, contrastLevel, contrastLow, contrastMedium, contrastHigh, invertScreen;
 
 
+/*
 menu_item_info mainMenu ={
 	.name = "Main menu",
 	.child[0] = &playGame,
@@ -89,7 +92,7 @@ menu_item_info invertScreen ={
 	.parent = &settings,
 	.child_num = 0,
 	.fcnPoint = &OLED_invert,
-};
+};"
 
 menu_item_info contrastLow ={
 	.name = "Low",
@@ -109,6 +112,7 @@ menu_item_info contrastHigh ={
 	.child_num = 0,
 	.fcnPoint = &MENU_contrHighFcn,
 };
+*/
 
 void MENU_init() {
 	OLED_init();
@@ -136,6 +140,8 @@ void MENU_print() {
 	}
 }
 
+
+/*
 // Going EAST selects.
 void MENU_select() {
 	if ((Joy_Button() || Joy_getDir() == EAST) && currChild!= NULL){
@@ -242,3 +248,4 @@ void GAME_fastSpeedFcn() {
 	GAME_setSpeedOpt(2);
 	GAME_setOpt(gameInit);
 }
+*/
