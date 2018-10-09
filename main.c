@@ -40,25 +40,10 @@ int main(void) {
 	//Joy_Init();
 	//TOUCH_Init();
 	OLED_init();
-	//MENU_init();
+	MENU_init();
 
-	char a = 'F';
+	char a[] = 'main test';
 	OLED_print_char(a);
-	OLED_print_char(a);
-	OLED_print_char(a);
-	char b = 'U';
-	OLED_print_char(b);
-	OLED_print_char(b);
-	OLED_print_char(b);
-	char c = 'C';
-	OLED_print_char(c);
-	char d = 'K';
-	OLED_print_char(d);
-
-	//SPI_init();
-
-	//_delay_ms(3000);
-
 
 	
 	while(1){
