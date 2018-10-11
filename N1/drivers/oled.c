@@ -4,6 +4,7 @@
 #include "font_norm.h"
 #include "uart.h"
 #include "../misc/memory_mapping.h"
+#include "menu.h"
 
 #include <avr/io.h>
 #include <stdlib.h>

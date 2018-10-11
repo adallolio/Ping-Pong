@@ -3,15 +3,17 @@
 #ifndef MENU_H_
 #define MENU_H_
 
-typedef struct menu_items menu_item_info;
-	
-typedef struct menu_items {
+
+typedef struct menu_item_info menu_item_info;
+
+typedef struct menu_item_info {
 	char *name;
 	menu_item_info *parent;
-	menu_item_info *child[7];
+	menu_item_info *child[3];
 	int child_num;
 	void (*fcnPoint)(void);
-};
+}menu_item_info;
+
 
 void MENU_init();
 void MENU_start();

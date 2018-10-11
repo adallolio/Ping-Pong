@@ -16,16 +16,19 @@ menu_item_info *currMenu;
 menu_item_info *currChild;
 int line;
 
-menu_item_info mainMenu, playGame, scores, settings, stop;
-//normalSpeed, fastSpeed, clearScores, contrastLevel, contrastLow, contrastMedium, contrastHigh, invertScreen;
-
-
+menu_item_info mainMenu, playGame, scores, settings, clearScores, normalSpeed, fastSpeed;
 /*
+mainMenu, playGame, scores, settings, stop, normalSpeed, fastSpeed, 
+clearScores, contrastLevel, contrastLow, contrastMedium, contrastHigh, invertScreen;
+*/
+
+
+
 menu_item_info mainMenu ={
 	.name = "Main menu",
 	.child[0] = &playGame,
 	.child[1] = &scores,
-	.child[1] = &settings,
+	.child[2] = &settings,
 	.child_num = 3,
 };
 
@@ -44,16 +47,16 @@ menu_item_info scores ={
 	.child_num = 0,
 	//.fcnPoint = &HIGHSCORE_print,
 };
-
-
+/*
 menu_item_info settings ={
 	.name = "Settings",
 	.parent = &mainMenu,
 	.child[0] = &clearScores,
-	.child[0] = &contrastLevel,
-	.child[1] = &invertScreen,
-	.child_num = 3,
+	.child[1] = &contrastLevel,
+	.child[2] = &invertScreen,
+	.child_num = 2,
 };
+
 
 menu_item_info normalSpeed = {
 	.name = "Normal",
@@ -92,7 +95,7 @@ menu_item_info invertScreen ={
 	.parent = &settings,
 	.child_num = 0,
 	.fcnPoint = &OLED_invert,
-};"
+};
 
 menu_item_info contrastLow ={
 	.name = "Low",
@@ -112,10 +115,10 @@ menu_item_info contrastHigh ={
 	.child_num = 0,
 	.fcnPoint = &MENU_contrHighFcn,
 };
-*/
 
+*/
 void MENU_init() {
-	OLED_init();
+	//OLED_init();
 	MENU_start();
 }
 
@@ -140,8 +143,16 @@ void MENU_print() {
 	}
 }
 
+void MENU_highlight() {
+	for (int i = 1; i < currMenu->child_num + 1; i++){
+		OLED_pos(i, 0);
+		OLED_printf("  ");
+	}
+	OLED_pos(line, 0);
+	OLED_print_arrow(line, 0);
+}
 
-/*
+
 // Going EAST selects.
 void MENU_select() {
 	if ((Joy_Button() || Joy_getDir() == EAST) && currChild!= NULL){
@@ -199,15 +210,6 @@ void MENU_nav() {
 	}
 }
 
-void MENU_highlight() {
-	for (int i = 1; i < currMenu->child_num + 1; i++){
-		OLED_pos(i, 0);
-		OLED_printf("  ");
-	}
-	OLED_pos(line, 0);
-	//OLED_print_arrow();
-}
-
 
 // Set contrast levels.
 void MENU_contrLowFcn() { 
@@ -248,4 +250,4 @@ void GAME_fastSpeedFcn() {
 	GAME_setSpeedOpt(2);
 	GAME_setOpt(gameInit);
 }
-*/
+

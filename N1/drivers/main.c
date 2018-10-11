@@ -10,7 +10,7 @@
 #include "touch.h"
 //#include "font_norm.h"
 #include "oled.h"
-//#include "menu.h"
+#include "menu.h"
 //#include "spi.h"
 #include "../misc/memory_mapping.h"
 #include "../misc/macros.h"
@@ -23,9 +23,9 @@ int main(void) {
 	fdevopen(UART_send, UART_receive);
 	
 	// JOYSTICK
-	//uint8_t x;
-	//uint8_t y;
-	//int btn;
+	uint8_t x;
+	uint8_t y;
+	int btn;
 
 	// TOUCH
 	//uint8_t l;
@@ -37,38 +37,37 @@ int main(void) {
 	//DDRA = 0xFF;
 	
 	ADC_Init();
-	//Joy_Init();
-	//TOUCH_Init();
+	Joy_Init();
+	TOUCH_Init();
 	OLED_init();
 	MENU_init();
-
-	char a[] = 'main test';
-	OLED_print_char(a);
+	//OLED_print_arrow(10, 100);
 
 	
 	while(1){
 		
-		//_delay_ms(2000);
- 		//OLED_wrCmd(0xaf); // display on
- 		//_delay_ms(2000);
- 		//OLED_wrCmd(0xae);
-
-		//_delay_ms(10000);
+		/*
+		_delay_ms(2000);
+ 		OLED_wrCmd(0xaf); // display on
+ 		_delay_ms(2000);
+ 		OLED_wrCmd(0xae); // display off
+		*/
+		
 		
 		// TEST JOYSTICK
-		//x = ADC_Read('x');
-		//printf("X position: %d\n\r", x);
-		//y = ADC_Read('y');
-		//printf("Y position: %d\n\r", y);
+		/*
+		x = ADC_Read('x');
+		printf("X position: %d\n\r", x);
+		y = ADC_Read('y');
+		printf("Y position: %d\n\r", y);
 
 		//Joy_getDir();
-		/*
+		
 		btn = Joy_Button();
 		if(btn==0){
 			printf("Joystick Button Pressed!\n\r");
 		}
 		*/
-
 		
 		
 		// TEST TOUCH
