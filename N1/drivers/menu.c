@@ -184,28 +184,31 @@ void MENU_select() {
 void MENU_nav() {
 	switch (Joy_getDir()){
 		case WEST:
-			while(Joy_getDir() == WEST){}
+			
 			if (currMenu->parent != NULL){
 				line = 1;
 				currMenu = currMenu->parent;
 				currChild = currMenu->child[0];
 				MENU_print();
+				while(Joy_getDir() == WEST){}
 			}
 			break;
 		case NORTH:
-			while(Joy_getDir() == NORTH){}
+			
 			if (line > 1){
 				line = line - 1;
 				currChild = currMenu->child[line - 1];
 				MENU_highlight();
+				while(Joy_getDir() == NORTH){}
 			}
 			break;
 		case SOUTH:
-			while(Joy_getDir() == SOUTH){}
+			
 			if (line < currMenu->child_num){
 				line = line + 1;
 				currChild = currMenu->child[line - 1];
 				MENU_highlight();
+				while(Joy_getDir() == SOUTH){}
 			}
 			break;
 		default:

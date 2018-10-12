@@ -10,11 +10,13 @@
 #include "touch.h"
 #include "oled.h"
 #include "menu.h"
-//#include "spi.h"
+#include "spi.h"
 #include "../misc/memory_mapping.h"
 #include "../misc/macros.h"
 //#include "misc/bit_manipulation.h"
 //#include "font_norm.h"
+
+volatile char data;
 
 int main(void) {
 	// Set and enable UART.
@@ -41,21 +43,17 @@ int main(void) {
 	TOUCH_Init();
 	OLED_init();
 	MENU_init();
+	//SPI_Init();
 
+	//SPI test
+	// char SPI_MOSI = 'a';
+	// uint8_t SPI_MISO;
 	
 	while(1){
 		MENU_nav();
 		MENU_select();
-		/*
-		_delay_ms(2000);
- 		OLED_wrCmd(0xaf); // display on
- 		_delay_ms(2000);
- 		OLED_wrCmd(0xae); // display off
-		*/
-		
 		
 		// TEST JOYSTICK
-		
 		// x = ADC_Read('x');
 		// printf("X position: %d\n\r", x);
 		// y = ADC_Read('y');
@@ -77,48 +75,14 @@ int main(void) {
 			printf("Touch Button Pressed!\n\r");
 		}
 		*/
-		
-		
 		//l = ADC_Read('l');
 		//printf("L: %d\n\r", l);
 		//r = ADC_Read('r');
 		//printf("R: %d\n\r", r);
 
-
-
-		// OLED TESTING
-
-		//OLED_printf();
-		//OLED_print_arrow();
-		//OLED_reset();
-		//OLED_drPix(20,100);
-
-		/*
-		_delay_ms(2000);
-		OLED_wrCmd(0xae);
-		_delay_ms(2000);
-		OLED_wrCmd(0xaf);
-		*/
-
-		/*
-		for (int i = 0; i < 5; i++){
-			OLED_wrData(pgm_read_byte(&font5[2][i]));
-		}
-		*/
-
-		//OLED_wrData(0xFF);
-
-		//_delay_ms(2000);
-
-		//OLED_invert();
-		
-		
-		//OLED_print_arrow(10, 100);
-
-		
 		// TEST SPI
-		//spi_tranceive(a);
-
+		//SPI_MISO = SPI_Transcieve(SPI_MOSI);
+		//_delay_ms(2);
 	}
 
 

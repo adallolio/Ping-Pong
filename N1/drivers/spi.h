@@ -1,12 +1,11 @@
-//spi.h
-// Author: Richard McCrae-Lauba
+// Richard McCrae-Lauba, SPI.h
 
 #ifndef SPI_H_
 #define SPI_H_
 
 
-void SPI_init(void);
-unsigned char spi_tranceive(char cData);
+void SPI_Init(void);
+uint8_t SPI_Transcieve(char data);
 
 
 #endif /* SPI_H */

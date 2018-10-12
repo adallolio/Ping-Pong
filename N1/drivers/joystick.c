@@ -135,14 +135,14 @@ Joy_direction Joy_getDir() {
 	Joy_position curr_pos = Joy_getPos();
 	int dir;
 	
-	if (curr_pos.x < 160 && curr_pos.y < 160 && curr_pos.x > 100 && curr_pos.y > 100) {
+	if (curr_pos.x < 250 && curr_pos.y < 250 && curr_pos.x > 5 && curr_pos.y > 5) {
 		dir=CENTRAL;
 		// OLED_printf("CENTRAL\n\r");
 		// _delay_ms(750);
 		// OLED_reset();
 	}
 	else if (curr_pos.x > curr_pos.y){
-		if (curr_pos.x > 225) {
+		if (curr_pos.x > 250) {
 			dir=EAST;
 			// OLED_printf("EAST\n\r");
 			// _delay_ms(750);
@@ -150,21 +150,21 @@ Joy_direction Joy_getDir() {
 		}
 	}
 	
-	if (curr_pos.x < 30) {
+	if (curr_pos.x < 5) {
 			dir=WEST;
 			// OLED_printf("WEST\n\r");
 			// delay_ms(750);
 			// OLED_reset();
 		}
 
-	if (curr_pos.y > 225) {
+	if (curr_pos.y > 250) {
 			dir=NORTH;
 			// OLED_printf("NORTH\n\r");
 			// _delay_ms(750);
 			// OLED_reset();
 		}
 	
-	if (curr_pos.y < 30) {
+	if (curr_pos.y < 5) {
 			dir=SOUTH;
 			// OLED_printf("SOUTH\n\r");
 			// _delay_ms(750);
