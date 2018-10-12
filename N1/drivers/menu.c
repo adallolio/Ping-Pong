@@ -16,7 +16,8 @@ menu_item_info *currMenu;
 menu_item_info *currChild;
 int line;
 
-menu_item_info mainMenu, playGame, scores, settings, clearScores, normalSpeed, fastSpeed;
+
+menu_item_info mainMenu, playGame, scores, settings, stop, normalSpeed, fastSpeed, clearScores, contrastLevel, contrastLow, contrastMedium, contrastHigh, invertScreen;
 /*
 mainMenu, playGame, scores, settings, stop, normalSpeed, fastSpeed, 
 clearScores, contrastLevel, contrastLow, contrastMedium, contrastHigh, invertScreen;
@@ -47,7 +48,7 @@ menu_item_info scores ={
 	.child_num = 0,
 	//.fcnPoint = &HIGHSCORE_print,
 };
-/*
+
 menu_item_info settings ={
 	.name = "Settings",
 	.parent = &mainMenu,
@@ -116,9 +117,9 @@ menu_item_info contrastHigh ={
 	.fcnPoint = &MENU_contrHighFcn,
 };
 
-*/
+
 void MENU_init() {
-	//OLED_init();
+	OLED_init();
 	MENU_start();
 }
 
@@ -176,6 +177,8 @@ void MENU_select() {
 		while(Joy_Button() || Joy_getDir() == EAST);
 	}
 }
+
+
 
 // Going EAST is not in navigation!
 void MENU_nav() {

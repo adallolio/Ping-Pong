@@ -54,7 +54,7 @@ void OLED_init() {
 
 	OLED_reset();
 
-	printf("OLED INITIALIZED!\n\r");
+	//printf("OLED INITIALIZED!\n\r");
 }
 
 void OLED_wrCmd(uint8_t cmd) {

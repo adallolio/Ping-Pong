@@ -17,7 +17,7 @@ void TOUCH_Init() {
 	//clear_bit(DDRB, PINB2); // ? Are the correct ones.
 	(DDRB &= ~(1 << PB2));
 
-	printf("Touch Initialized!\n\r");
+	//printf("Touch Initialized!\n\r");
 }
 
 int TOUCH_Button() {	
@@ -39,8 +39,8 @@ TOUCH_sliderPos TOUCH_Read() {
 	pos.slider_left = ADC_Read('l');
 	_delay_ms(1);
 	pos.slider_right = ADC_Read('r');
-	printf("L: %d\n\r", pos.slider_left);
-	printf("R: %d\n\r", pos.slider_right);
+	//printf("L: %d\n\r", pos.slider_left);
+	//printf("R: %d\n\r", pos.slider_right);
 
 	return pos;
 }

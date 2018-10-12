@@ -6,6 +6,7 @@
 #include "../misc/macros.h"
 //#include "../misc/bit_manipulation.h"
 #include "../misc/memory_mapping.h"
+#include "oled.h"
 
 #include <avr/io.h>
 #include <util/delay.h>
@@ -47,24 +48,24 @@ void Joy_Cal() {
 	Joy_position pos;
 	Joy_position pos_next;
 
-	printf("Calibration started ... \n\r");
-	_delay_ms(1000);
-	printf("Acquiring central position ... \n\r");
+	//printf("Calibration started ... \n\r");
+	//_delay_ms(1000);
+	//printf("Acquiring central position ... \n\r");
 	pos.y = ADC_Read('y');
-	_delay_ms(1);
+	//_delay_ms(1);
 	pos.x = ADC_Read('x');
-	_delay_ms(2000);
-	printf("Compute offset ... \n\r");
+	//_delay_ms(2000);
+	//printf("Compute offset ... \n\r");
 	x_off = abs(pos.x) - central_x;
 	y_off = abs(pos.y) - central_y;
 
-	printf("X offset: %d\n\r", x_off);
-	printf("Y offset: %d\n\r", y_off);
-	printf("Calibrated X position: %d\n\r", pos.x-x_off);
-	printf("Calibrated Y position: %d\n\r", pos.y-y_off);
+	//printf("X offset: %d\n\r", x_off);
+	//printf("Y offset: %d\n\r", y_off);
+	//printf("Calibrated X position: %d\n\r", pos.x-x_off);
+	//printf("Calibrated Y position: %d\n\r", pos.y-y_off);
 
-	_delay_ms(3000);
-	printf("JOYSTICK CALIBRATED!\n\r");
+	//_delay_ms(3000);
+	//printf("JOYSTICK CALIBRATED!\n\r");
 }
 
 void Joy_Init() {
@@ -84,9 +85,9 @@ void Joy_Init() {
 
 int Joy_Button() {
 	if( !(PINB & (1 << PB3)) ) {
-		return 0;
+		return 1;
 	}
-	return 1;
+	return 0;
 }
 
 // Get Joystick position.
@@ -122,7 +123,7 @@ Joy_position Joy_getPos()
 	// Compute and trim pos y.
 	perc_pos_y = (curr_pos.y/(float)max_pos_y)*100;
 
-	printf("Joystick Position in percentage: x=%.2f, y=%.2f \n\r", perc_pos_x, perc_pos_y);
+	//printf("Joystick Position in percentage: x=%.2f, y=%.2f \n\r", perc_pos_x, perc_pos_y);
 	
 	
 	return curr_pos;
@@ -134,30 +135,40 @@ Joy_direction Joy_getDir() {
 	Joy_position curr_pos = Joy_getPos();
 	int dir;
 	
-	if (curr_pos.x < 134 && curr_pos.y < 134 && curr_pos.x > 120 && curr_pos.y > 120) {
+	if (curr_pos.x < 160 && curr_pos.y < 160 && curr_pos.x > 100 && curr_pos.y > 100) {
 		dir=CENTRAL;
-		printf("Joystick Direction: CENTRAL\n\r");
+		// OLED_printf("CENTRAL\n\r");
+		// _delay_ms(750);
+		// OLED_reset();
 	}
 	else if (curr_pos.x > curr_pos.y){
-		if (curr_pos.x > 240) {
+		if (curr_pos.x > 225) {
 			dir=EAST;
-			printf("Joystick Direction: EAST\n\r");
+			// OLED_printf("EAST\n\r");
+			// _delay_ms(750);
+			// OLED_reset();
 		}
 	}
 	
-	if (curr_pos.x < 10) {
+	if (curr_pos.x < 30) {
 			dir=WEST;
-			printf("Joystick Direction: WEST\n\r");
+			// OLED_printf("WEST\n\r");
+			// delay_ms(750);
+			// OLED_reset();
 		}
 
-	if (curr_pos.y > 240) {
+	if (curr_pos.y > 225) {
 			dir=NORTH;
-			printf("Joystick Direction: NORTH\n\r");
+			// OLED_printf("NORTH\n\r");
+			// _delay_ms(750);
+			// OLED_reset();
 		}
 	
-	if (curr_pos.y < 10) {
+	if (curr_pos.y < 30) {
 			dir=SOUTH;
-			printf("Joystick Direction: SOUTH\n\r");
+			// OLED_printf("SOUTH\n\r");
+			// _delay_ms(750);
+			// OLED_reset();
 		}
 
 	return dir;
