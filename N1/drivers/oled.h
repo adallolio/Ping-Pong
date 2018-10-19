@@ -47,7 +47,7 @@
 #define HIGH_CONTRAST						0xF0
 
 
-void OLED_init();
+void OLED_Init();
 void OLED_wrCmd(uint8_t cmd);
 void OLED_wrData(uint8_t data);
 void OLED_gotoCol(uint8_t col);

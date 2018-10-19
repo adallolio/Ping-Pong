@@ -6,10 +6,9 @@
 #include "../misc/memory_mapping.h"
 #include "../misc/macros.h"
 #include "spi.h"
-#include <avr/interrupt.h>
 
 
-void SPI_Init(void)
+int SPI_Init(void)
 {
     /* Set MOSI, SCK, SS output, all others input */
     DDRB = (1<<PB5)|(1<<PB7)|(1<<PB4);
@@ -21,6 +20,7 @@ void SPI_Init(void)
     SPCR &= ~(1 << CPOL);
     SPCR &= ~(1 << CPHA);
 
+    return 0;
 }
 
 //Function to send and receive data for both master and slave

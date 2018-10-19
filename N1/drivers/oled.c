@@ -25,7 +25,7 @@ static uint8_t line = 0;
 
 
 
-void OLED_init() {
+void OLED_Init() {
 
  OLED_wrCmd(0xae); // display off
  OLED_wrCmd(0xa1); //segment remap

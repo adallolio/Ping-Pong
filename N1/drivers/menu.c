@@ -118,8 +118,8 @@ menu_item_info contrastHigh ={
 };
 
 
-void MENU_init() {
-	OLED_init();
+void MENU_Init() {
+	OLED_Init();
 	MENU_start();
 }
 

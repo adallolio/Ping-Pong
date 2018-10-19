@@ -1,0 +1,7 @@
+git clone https://github.com/adallolio/Ping-Pong.git
+
+git status (red)
+git add .
+git status (green)
+git commit -m "comments"
+git push

@@ -15,7 +15,7 @@ typedef struct menu_item_info {
 }menu_item_info;
 
 
-void MENU_init();
+void MENU_Init();
 void MENU_start();
 void MENU_print();
 void MENU_select();
