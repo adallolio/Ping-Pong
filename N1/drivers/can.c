@@ -1,7 +1,7 @@
 // CAN.c
 // Richard McCrae-Lauba
 
-#include "../misc/bit_manipulation.h"
+//#include "../misc/bit_manipulation.h"
 #include "mcp2515.h"
 #include "can.h"
 #include <avr/io.h>

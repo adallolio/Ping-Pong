@@ -1,6 +1,6 @@
 // Alberto Dallolio - Main N1
 
-#include "../misc/bit_manipulation.h"
+//#include "../misc/bit_manipulation.h"
 #include <stdio.h>
 #include <avr/io.h>
 #include <util/delay.h>

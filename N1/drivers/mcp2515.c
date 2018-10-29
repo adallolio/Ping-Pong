@@ -1,7 +1,7 @@
 // MCP2515.c
 // Richard McCrae-Lauba
 
-#include "../misc/bit_manipulation.h"
+//#include "../misc/bit_manipulation.h"
 #include "spi.h"
 #include "mcp2515.h"
 #include "../misc/memory_mapping.h"
@@ -32,13 +32,15 @@ uint8_t mcp2515_Init(void) {
 
 void mcp2515_N1_select(void) {
     // Select CAN-controller, pull CS low
-    clear_bit(PORTB, PB4);
+    //clear_bit(PORTB, PB4);
+    PORTB &= ~(1 << PB4);
 }
 
 
 void mcp2515_N1_deselect(void) {
     // Deselect CAN-controller, pull CS high
-    set_bit(PORTB, PB4);
+    //set_bit(PORTB, PB4);
+    PORTB |= (1 << PB4);
 }
 
 

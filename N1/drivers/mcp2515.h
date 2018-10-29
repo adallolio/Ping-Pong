@@ -170,6 +170,8 @@ Copyright 2003 Kimberly Otten Software Consulting
 #define MCP_FILTER_OFF	0x60
 #define MCP_ROLLOVER	0x04
 
+#include <stdint.h>
+
 
 void mcp2515_N1_select(void);
 void mcp2515_N1_deselect(void);

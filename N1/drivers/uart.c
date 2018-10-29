@@ -1,10 +1,10 @@
 // Alberto Dallolio - Uart Communication
 
+//#include "../misc/bit_manipulation.h"
+#include "uart.h"
 #include <avr/io.h>
 #include <stdio.h>
 #include <util/delay.h>
-#include "../misc/bit_manipulation.h"
-#include "uart.h"
 
 #define BAUD_RATE 9600
 

@@ -1,6 +1,6 @@
 // Richard McCrae-Lauba, SPI
 
-#include "../misc/bit_manipulation.h"
+//#include "../misc/bit_manipulation.h"
 #include <avr/io.h>
 #include <stdio.h>
 #include <util/delay.h>
@@ -10,8 +10,7 @@
 
 
 
-int SPI_Init(void)
-{
+int SPI_Init(void) {
     /* Set MOSI, SCK, SS output, all others input */
     DDRB = (1<<PB5)|(1<<PB7)|(1<<PB4);
     
@@ -26,8 +25,7 @@ int SPI_Init(void)
 }
 
 //Function to send and receive data for both master and slave
-uint8_t SPI_Transcieve(uint8_t data)
-{
+uint8_t SPI_Transcieve(uint8_t data) {
     // Load data into the buffer
     SPDR = data;
     //printf("SPI data out: %d\r\n",data);
