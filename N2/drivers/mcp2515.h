@@ -1,4 +1,4 @@
-// MCP2515.h
+// MCP2515.h - Node 2
 // Richard McCrae-Lauba
 
 /*
@@ -12,8 +12,8 @@ v1.00       2003/12/11  Initial release
 Copyright 2003 Kimberly Otten Software Consulting
 */
 
-#ifndef __MCP2515_H
-#define __MCP2515_H
+#ifndef MCP2515_H_
+#define MCP2515_H_
 
 // Define MCP2515 register addresses
 #define MCP_RXF0SIDH	0x00
@@ -93,9 +93,6 @@ Copyright 2003 Kimberly Otten Software Consulting
 #define MCP_TX01_MASK	0x14
 #define MCP_TX_MASK		0x54
 
-#define MCP_TXB0EID8	0x33
-#define MCP_TXB0EID0	0x34
-
 // Define SPI Instruction Set
 #define MCP_WRITE		0x02
 
@@ -170,6 +167,8 @@ Copyright 2003 Kimberly Otten Software Consulting
 #define MCP_FILTER_OFF	0x60
 #define MCP_ROLLOVER	0x04
 
+#define MCP_TXB0EID8	0x33
+#define MCP_TXB0EID0	0x34
 
 void mcp2515_N1_select(void);
 void mcp2515_N1_deselect(void);

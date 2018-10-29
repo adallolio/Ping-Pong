@@ -4,19 +4,24 @@
 #ifndef CAN_H_
 #define CAN_H_
 
-uint8_t rx_flag;
+//volatile uint8_t rx_flag;
+enum interrupt_flags {no_flag, RX0, RX1};
 
 typedef struct {
-	int id;
-	uint8_t length;
+	int id;				// 5 bytes for standard identifier
+	uint8_t length;		// Number of data bytes
 	int8_t data[8];
-} CAN_message_t;
+} CAN_message;
 
 int CAN_Init(void);
-int CAN_message_send(CAN_message_t* message);
+void CAN_msgSend(CAN_message* message);
+CAN_message CAN_msgRec();
+
+//void CAN_intHandle(/*can_msg *msg*/)
+/*
 int CAN_error(void);
 int CAN_transmit_complete(void);
 int CAN_int_vect(void);
-CAN_message_t CAN_data_receive(void);
+*/
 
 #endif

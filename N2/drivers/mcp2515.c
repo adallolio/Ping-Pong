@@ -1,18 +1,17 @@
-// MCP2515.c
-// Richard McCrae-Lauba
+// Richard McCrae-Lauba - MCP2515.c - Node 2
 
 #include "../misc/bit_manipulation.h"
+#include "../misc/macros.h"
 #include "spi.h"
 #include "mcp2515.h"
-#include "../misc/memory_mapping.h"
-#include "../misc/macros.h"
 #include <avr/io.h>
 #include <stdio.h>
 #include <util/delay.h>
+#include <stdint.h>
 
 
 
-uint8_t mcp2515_Init(void) {
+uint8_t mcp2515_Init(void)  {
 	volatile uint8_t value;
 	
 	SPI_Init();             //Initialize SPI driver
@@ -21,7 +20,7 @@ uint8_t mcp2515_Init(void) {
 	//Self-test
 	value = mcp2515_read(MCP_CANSTAT);
 	if ((value & MODE_MASK) != MODE_CONFIG) {
-		printf("MCP2515 is NOT in configuration mode after reset!\r\n");
+		printf("MCP2515 is NOT in configuration mode after reset!");
 		
         return 1;
 	}
@@ -30,27 +29,27 @@ uint8_t mcp2515_Init(void) {
 }
 
 
-void mcp2515_N1_select(void) {
+void mcp2515_N1_select(void)
+{
     // Select CAN-controller, pull CS low
-    clear_bit(PORTB, PB4);
+    clear_bit(PORTB, PB7);
 }
 
 
 void mcp2515_N1_deselect(void) {
     // Deselect CAN-controller, pull CS high
-    set_bit(PORTB, PB4);
+    set_bit(PORTB, PB7);
 }
 
 
 int mcp2515_read(uint8_t address) {
-    uint8_t rec;
+    uint8_t result;
     mcp2515_N1_select();
     SPI_Transcieve(MCP_READ);         // Send read instruction
-    SPI_Transcieve(address); // Send address
-    rec = SPI_Transcieve(0);
+    result = SPI_Transcieve(address); // Send address
     mcp2515_N1_deselect();
     
-    return rec;
+    return result;
 }
 
 
@@ -74,7 +73,6 @@ uint8_t mcp2515_reset(void) {
 
 uint8_t mcp2515_request_to_send(uint8_t command) {
     /* command arg decides which transmit buffer(s) are enabled to send, here TX0*/
-    /*
     if (command <= 7){
         // Request to Send via TX0 if cmd = 1
         command = MCP_RTS_TX0 | command;
@@ -90,11 +88,6 @@ uint8_t mcp2515_request_to_send(uint8_t command) {
     mcp2515_N1_deselect();
     
     return 0;
-    */
-    command = command | 0x01;
-    mcp2515_N1_select();
-    SPI_Transcieve(command);
-    mcp2515_N1_deselect();
 }
 
 uint8_t mcp2515_read_status(void) {
@@ -111,8 +104,8 @@ int mcp2515_bit_modify(uint8_t address, uint8_t mask, uint8_t data) {
     mcp2515_N1_select();
     SPI_Transcieve(MCP_BITMOD);       // Send bit modify command to MCP2515
     SPI_Transcieve(address);          // send register address
-    SPI_Transcieve(mask);             // send mask byte. This mask decides which bits in REG to change. "1" allows change, "0" does not
-    SPI_Transcieve(data);             // send data byte. Data determines the values of the register to be changed to. 1= set, 0=clear
+    SPI_Transcieve(mask);             // send mask byte.  This mask decides which bits in REG to change. "1" allows change, "0" does not
+    SPI_Transcieve(data);             // send data byte.  Data determines the values of the register to be changed to. 1= set, 0=clear
     mcp2515_N1_deselect();
 
     return 0;

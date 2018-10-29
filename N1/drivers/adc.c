@@ -14,6 +14,7 @@ int ADC_Init(void) {
 
 	// Set interrupt pin as input.
 	DDRE &= ~(1 << PE0);
+
 	return 0;
 }
 

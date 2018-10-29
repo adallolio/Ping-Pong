@@ -1,13 +1,13 @@
-// Alberto Dallolio - Uart Communication
+// Richard McCrae-Lauba - Uart Communication - Node 2
 
+#include "../misc/bit_manipulation.h"
+#include "uart.h"
 #include <avr/io.h>
 #include <stdio.h>
 #include <util/delay.h>
-#include "../misc/bit_manipulation.h"
-#include "uart.h"
+#include <stdint.h>
 
 #define BAUD_RATE 9600
-
 
 
 void UART_Init(unsigned long clock){
@@ -20,10 +20,12 @@ void UART_Init(unsigned long clock){
 	/* Enable receiver and transmitter */
 	UCSR0B = (1<<RXEN0)|(1<<TXEN0);
 	/* Set frame format: 8data, 2stop bit */
-	UCSR0C = (1<<URSEL0)|(1<<USBS0)|(3<<UCSZ00);
-	//UCSR0C |= (1<<URSEL0)|(1<<USBS0)|(1<<UCSZ00)|(1<<UCSZ01);
+	UCSR0C = (1<<USBS0)|(3<<UCSZ00);
+	//UCSR0C |=(1<<USBS0)|(1<<UCSZ00)|(1<<UCSZ01);
 
 }
+
+
 
 // Function for reading received data.
 unsigned char UART_receive(){
@@ -33,6 +35,7 @@ unsigned char UART_receive(){
 	/* Get and return received data from buffer */
 	return UDR0;
 }
+
 
 // Function to read transmitted data.
 void UART_send(unsigned char data){

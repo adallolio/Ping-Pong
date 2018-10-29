@@ -1,10 +1,12 @@
 // Alberto Dallolio - Main N1
 
+#include "../misc/bit_manipulation.h"
 #include <stdio.h>
 #include <avr/io.h>
 #include <util/delay.h>
 #include <avr/pgmspace.h>
 #include "uart.h"
+#include <avr/interrupt.h>
 #include "adc.h"
 #include "joystick.h"
 #include "touch.h"
@@ -15,65 +17,73 @@
 #include "can.h"
 #include "../misc/memory_mapping.h"
 #include "../misc/macros.h"
-//#include "misc/bit_manipulation.h"
+
 //#include "font_norm.h"
 
-volatile char data;
-// CAN LOOPBACK TEST
-void func(CAN_message_t msg_send);
 
 int main(void) {
-	// Set and enable UART.
+
+	//------------UART------------//
 	unsigned long cpu_speed = F_CPU;
-    UART_Init(cpu_speed);
-	fdevopen(UART_send, UART_receive);
+    UART_Init(cpu_speed);				// Set clock speed
+	fdevopen(UART_send, UART_receive);  // Connect printf
+
+	//------------INTERRUPTS------------//
+	//DDRD &= ~(1 << PIND2);
+	//GICR |= (1<<INT0);
+	//MCUCR |= (1<<ISC01);
+	//MCUCR &= ~(1<<ISC00);
+	sei();
+
+	//------------ADC------------//
+	ADC_Init();
 	
-	// JOYSTICK
+	
+	//------------JOYSTICK TEST------------//
+	Joy_Init();
 	// uint8_t x;
 	// uint8_t y;
 	// int btn;
 
-	// TOUCH
+	//------------TOUCH TEST------------//
+	TOUCH_Init();
 	//uint8_t l;
 	//uint8_t r;
 	//int touch_btn;
-
 	//_delay_ms(5000);
-	
 	//DDRA = 0xFF;
 	
-	ADC_Init();
-	Joy_Init();
-	TOUCH_Init();
+	//------------OLED and MENU------------//
 	OLED_Init();
-	MENU_Init();
+	//MENU_Init();
 	
-	// CAN LOOPBACK TEST
+
+	//------------CAN TEST------------//
 	
 	CAN_Init();
-	mcp2515_loopback();
-	CAN_message_t can_msg_send;
-	CAN_message_t can_msg_receive;
+	CAN_message send;
+	CAN_message rec;
 
-	can_msg_send.id=10;
-	can_msg_send.length=3;
-	can_msg_send.data[1]=5;
+	
+	send.id=0x01;
+	send.length=3;
+	send.data[0]=4;
+	send.data[1]=5;
+	send.data[2]=6;
 
-	//SPI test
+	//------------SPI TEST------------//
 	// char SPI_MOSI = 'a';
 	// uint8_t SPI_MISO;
 	
 	while(1){
-		// CAN LOOPBACK TEST
-		CAN_message_send(&can_msg_send);
-		can_msg_receive = CAN_data_receive();
+		//------------JOYSTICK OVER CAN TEST------------//
+		CAN_msgSend(&send);
+		printf("sent msg:%d\r\n", send.data[0]);
+		printf("sent msg:%d\r\n", send.data[1]);
+		printf("sent msg:%d\r\n", send.data[2]);
 		_delay_ms(1000);
 		
-		// TEST MENU
-		//MENU_nav();
-		//MENU_select();
-		
-		// TEST JOYSTICK
+		//------------JOYSTICK TEST------------//
 		// x = ADC_Read('x');
 		// printf("X position: %d\n\r", x);
 		// y = ADC_Read('y');
@@ -87,7 +97,7 @@ int main(void) {
 		// }
 		
 		
-		// TEST TOUCH
+		//------------TOUCH TEST------------//
 		//TOUCH_getPos();
 		/*
 		touch_btn = TOUCH_Button();
@@ -100,7 +110,19 @@ int main(void) {
 		//r = ADC_Read('r');
 		//printf("R: %d\n\r", r);
 
-		// TEST SPI
+
+		//------------OLED------------//
+		//OLED_printf(can_msg_receive.data);
+		//_delay_ms(2000);
+		//OLED_reset();
+		//_delay_ms(2000);
+
+		//------------MENU------------//
+		//MENU_nav();
+		//MENU_select();
+		
+		
+		//------------SPI TEST------------//
 		//SPI_MISO = SPI_Transcieve(SPI_MOSI);
 		//_delay_ms(2);
 	}
