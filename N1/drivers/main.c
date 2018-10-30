@@ -22,14 +22,14 @@
 
 
 int main(void) {
-
+	cli();
 	//------------UART------------//
 	unsigned long cpu_speed = F_CPU;
-    UART_Init(cpu_speed);				// Set clock speed
+    	UART_Init(cpu_speed);				// Set clock speed
 	fdevopen(UART_send, UART_receive);  // Connect printf
 
 	//------------INTERRUPTS------------//
-	sei();
+	
 	//DDRD &= ~(1 << PIND2);
 	//GICR |= (1<<INT0);
 	//MCUCR |= (1<<ISC01);
@@ -64,7 +64,7 @@ int main(void) {
 	CAN_Init();
 	CAN_message send;
 	CAN_message rec;
-
+	sei();
 	
 	send.id=0x01;
 	send.length=3;
