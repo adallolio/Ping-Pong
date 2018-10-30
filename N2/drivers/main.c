@@ -30,11 +30,11 @@ int main(void) {
 	// will trigger as long as the pin is held low.
 	
 	// ISCn1, ISCn0 = 0,0: The low level of INTn generates an interrupt request
-	EICRA |= (0 << ISC21) | (0 << ISC20);
+	//EICRA |= (0 << ISC21) | (0 << ISC20);
 	// Clear INT2 flag prior to initialization
-	EIFR |= (0 << INTF2);
+	//EIFR |= (0 << INTF2);
 	// Enable external interrupts of INT2, PD2
-	EIMSK |= (1 << INT2);
+	//EIMSK |= (1 << INT2);
 
 
 	//------------ADC------------//

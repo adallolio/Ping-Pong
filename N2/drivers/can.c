@@ -46,8 +46,8 @@ void CAN_Init(void) {
 	mcp2515_write(MCP_CANINTE, MCP_TX_INT);
 
 	// Low INT0 generates interrupt request
-	MCUCR |= (0 << ISC01) | (0 << ISC00);
-	GICR |= (1 << INT0);
+	//MCUCR |= (0 << ISC01) | (0 << ISC00);
+	//GICR |= (1 << INT0);
 	
 	//Enable normal mode
 	mcp2515_bit_modify(MCP_CANCTRL, MODE_MASK, MODE_NORMAL);
@@ -81,7 +81,7 @@ CAN_message CAN_msgRec() {
 	switch(interrupt_flag){
 		case no_flag:
 			//msg->data[0] = CAN_NO_MESSAGE;
-			print("no_flag\r\n");
+			printf("no_flag\r\n");
 			break;
 		case RX0:
 			printf("Entered rec RX0\r\n");
