@@ -39,14 +39,15 @@ ISR(INT0_vect){
 		// clear CANINTF.RX1IF
 		mcp2515_bit_modify(MCP_CANINTF, 0x02, 0x00);
 	}
-	if(MCP_CANINTF & 0x04){
-		//printf("Send INT\r\n");
-		//clear send INT
+	// INT if msg successfully sent
+	if (interrupt & MCP_TX0IF){
+		printf("CAN msg sent from N1\r\n");
+		// clear CANINTF.TX0IF
 		mcp2515_bit_modify(MCP_CANINTF,0x04,0);
 	}	
 }
 
-int CAN_Init(void) {
+void CAN_Init(void) {
 	//Enter config mode
 	mcp2515_Init();
 			
@@ -59,12 +60,9 @@ int CAN_Init(void) {
 	mcp2515_bit_modify(MCP_RXB0CTRL, MCP_ROLLOVER, MCP_ROLLOVER);
 	mcp2515_bit_modify(MCP_RXB1CTRL, MCP_ROLLOVER, MCP_ROLLOVER);
 	
-	//Enable interrupt when message is received (RX0IE = 1)
-	//mcp2515_bit_modify(MCP_CANINTE, 0x01, 1);
+	//Enable interrupt when message is received and sent (RX0IE = 1, TX0IF=1)
 	mcp2515_write(MCP_CANINTE, MCP_RX_INT);
-
-	//Enable sent INT
-	//mcp2515_write(MCP_CANINTE, MCP_TX_INT);
+	mcp2515_write(MCP_CANINTE, MCP_TX_INT);
 
 	// Low INT0 generates interrupt request
 	MCUCR |= (0 << ISC01) | (0 << ISC00);
@@ -76,9 +74,6 @@ int CAN_Init(void) {
 	//Enable loopback mode
 	//mcp2515_bit_modify(MCP_CANCTRL,MODE_MASK,MODE_LOOPBACK);
 
-
-
-	return 0;
 }
 
 void CAN_msgSend(CAN_message *message) {
@@ -128,9 +123,7 @@ void CAN_msgSend(CAN_message *message) {
 		mcp2515_write(MCP_TXB0SIDH + 5 + i, message->data[i] );
 	}
 	
-	//printf("CANINTF b4 RTS: %d\r\n",MCP_CANINTF);
 	mcp2515_request_to_send(MCP_RTS_TX0);
-	//printf("CANINTF after RTS: %d\r\n",MCP_CANINTF);
 
 }
 
@@ -174,7 +167,6 @@ CAN_message CAN_msgRec() {
 
 	switch(interrupt_flag){
 		case no_flag:
-			msg.id = 10;
 			//msg->data[0] = CAN_NO_MESSAGE;
 			break;
 		
@@ -214,6 +206,7 @@ CAN_message CAN_msgRec() {
 		default:
 			break;
 	}
+	
 
 	/*
 	// RXBnSIDH and RXBnSIDL (id)

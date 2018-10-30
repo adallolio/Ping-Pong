@@ -29,11 +29,12 @@ int main(void) {
 	fdevopen(UART_send, UART_receive);  // Connect printf
 
 	//------------INTERRUPTS------------//
+	sei();
 	//DDRD &= ~(1 << PIND2);
 	//GICR |= (1<<INT0);
 	//MCUCR |= (1<<ISC01);
 	//MCUCR &= ~(1<<ISC00);
-	sei();
+	
 
 	//------------ADC------------//
 	ADC_Init();
@@ -78,9 +79,9 @@ int main(void) {
 	while(1){
 		//------------JOYSTICK OVER CAN TEST------------//
 		CAN_msgSend(&send);
-		printf("sent msg:%d\r\n", send.data[0]);
-		printf("sent msg:%d\r\n", send.data[1]);
-		printf("sent msg:%d\r\n", send.data[2]);
+		// printf("send.id: %d\r\n", send.id);
+		// printf("send.length: %d\r\n", send.length);
+		// printf("send.data[0]: %d\r\n", send.data[0]);
 		_delay_ms(1000);
 		
 		//------------JOYSTICK TEST------------//

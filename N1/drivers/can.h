@@ -13,7 +13,7 @@ typedef struct {
 	int8_t data[8];
 } CAN_message;
 
-int CAN_Init(void);
+void CAN_Init(void);
 void CAN_msgSend(CAN_message* message);
 CAN_message CAN_msgRec();
 
