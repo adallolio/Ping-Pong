@@ -16,15 +16,15 @@
 
 
 int main(void) {
-
+	cli();
 	//------------UART------------//
 	unsigned long cpu_speed = F_CPU;
-    UART_Init(cpu_speed);				// Set clock speed
+    	UART_Init(cpu_speed);				// Set clock speed
 	fdevopen(UART_send, UART_receive);  // Connect printf
 
 
 	//------------INTERRUPTS------------//
-	sei();
+	
 	// External Interrupt Control Registers – EICRA (INT3:0). When the external
 	// interrupt is enabled and is configured as level triggered, the interrupt 
 	// will trigger as long as the pin is held low.
@@ -45,25 +45,19 @@ int main(void) {
 	
 	CAN_Init();
 	CAN_message rec;
-	CAN_message rec_Prev;
-	rec_Prev.id=0x00;
-	rec_Prev.length=0;
+
 
 	//------------SPI TEST------------//
 	// char SPI_MOSI = 'a';
 	// uint8_t SPI_MISO;
 	
-
+	sei();
 	while(1){
 		//------------CAN TEST------------//
 		rec = CAN_msgRec();
-		//if(rec != rec_Prev){
-			// printf("received msg:%d\r\n", rec.data[0]);
-			// printf("received msg:%d\r\n", rec.data[1]);
-			// printf("received msg:%d\r\n", rec.data[2]);
+		printf("Received data: %d\r\n",rec.data[0]);
 		_delay_ms(250);
-		//	rec_Prev = rec;
-		//}
+
 	}
 	
 	return 0;
