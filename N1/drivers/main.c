@@ -82,7 +82,7 @@ int main(void) {
 		// printf("send.id: %d\r\n", send.id);
 		// printf("send.length: %d\r\n", send.length);
 		// printf("send.data[0]: %d\r\n", send.data[0]);
-		_delay_ms(1000);
+		_delay_ms(2000);
 		
 		//------------JOYSTICK TEST------------//
 		// x = ADC_Read('x');
