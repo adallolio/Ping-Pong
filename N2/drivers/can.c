@@ -94,7 +94,7 @@ CAN_message CAN_msgRec() {
 				msg.data[i] = mcp2515_read(MCP_RXB0CTRL + 6 + i);	
 				i++;
 			}
-			printf("MSG DATA: %d\r\n", msg.data[0]);
+			//printf("MSG DATA: %d\r\n", msg.data[0]);
 			interrupt_flag = no_flag;
 			break;
 		case RX1:
