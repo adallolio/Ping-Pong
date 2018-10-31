@@ -12,8 +12,24 @@
 
 enum interrupt_flags interrupt_flag = no_flag; 
 
+ISR(INT2_vect){
+	uint8_t interrupt = mcp2515_read(MCP_CANINTF);
 
-int CAN_Init() {
+	if (interrupt & MCP_RX0IF){
+		interrupt_flag = RX0;
+		//printf("RX0 entered\r\n");
+		// clear CANINTF.RX0IF
+		mcp2515_bit_modify(MCP_CANINTF, 0x01, 0x00);
+	}
+	else if (interrupt & MCP_RX1IF){
+		interrupt_flag = RX1;
+		//printf("RX1 entered");
+		// clear CANINTF.RX1IF
+		mcp2515_bit_modify(MCP_CANINTF, 0x02, 0x00);
+	}
+}
+
+void CAN_Init() {
 	mcp2515_Init();
 	// Turn mask/filters off
 	mcp2515_bit_modify(MCP_RXB0CTRL, MCP_FILTER_OFF, MCP_FILTER_OFF);
@@ -23,14 +39,6 @@ int CAN_Init() {
 	mcp2515_bit_modify(MCP_RXB0CTRL, MCP_ROLLOVER, MCP_ROLLOVER);
 	mcp2515_bit_modify(MCP_RXB1CTRL, MCP_ROLLOVER, MCP_ROLLOVER);
 	
-	// Set to normal mode
-	mcp2515_bit_modify(MCP_CANCTRL, MODE_MASK, MODE_NORMAL);
-	
-	uint8_t value = mcp2515_read(MCP_CANSTAT);
-	if ((value & MODE_MASK) != MODE_NORMAL){
-		return 1;
-	}
-	
 	// Interrupt pin (enable CANINTE.RXnIE)
 	mcp2515_write(MCP_CANINTE, MCP_RX_INT);
 
@@ -39,7 +47,12 @@ int CAN_Init() {
 	// Enable external interrupts of INT2, PD2
 	EIMSK |= (1 << INT2);
 
-	return 0;
+	// Set to normal mode
+	mcp2515_bit_modify(MCP_CANCTRL, MODE_MASK, MODE_NORMAL);
+
+	// Set to loopback mode
+	//mcp2515_bit_modify(MCP_CANCTRL, MODE_MASK, MODE_LOOPBACK);
+
 }
 
 void CAN_msgSend(CAN_message *message) {
@@ -66,9 +79,11 @@ CAN_message CAN_msgRec() {
 	switch(interrupt_flag){
 		case no_flag:
 			//msg->data[0] = CAN_NO_MESSAGE;
+			printf("NO FLAG\r\n");
 			break;
 		case RX0:
 			// RXBnSIDH and RXBnSIDL (id)
+			printf("ENTERED!\r\n");
 			msg.id = (mcp2515_read(MCP_RXB0CTRL + 1) << 3) | (mcp2515_read(MCP_RXB0CTRL + 2) >> 5);
 			// bit 0 to 3 are data length code bits. register + 5 is RXBnDLC (data length)
 			msg.length = (mcp2515_read(MCP_RXB0CTRL + 5) & 0x0F ); 
@@ -78,7 +93,8 @@ CAN_message CAN_msgRec() {
 				//RXBnDM (receive buffer)
 				msg.data[i] = mcp2515_read(MCP_RXB0CTRL + 6 + i);	
 				i++;
-			}	
+			}
+			printf("MSG DATA: %d\r\n", msg.data[0]);
 			interrupt_flag = no_flag;
 			break;
 		case RX1:
@@ -93,6 +109,7 @@ CAN_message CAN_msgRec() {
 				msg.data[j] = mcp2515_read(MCP_RXB1CTRL + 6 + j);	
 				j++;
 			}
+			//printf("MSG DATA: %d\r\n", msg.data[0]);
 			interrupt_flag = no_flag;
 			break;
 		default:
@@ -121,18 +138,3 @@ void CAN_handle_interrupt(can_msg *msg)
 	}
 }
 */
-
-ISR(INT2_vect){
-	uint8_t interrupt = mcp2515_read(MCP_CANINTF);
-
-	if (interrupt & MCP_RX0IF){
-		interrupt_flag = RX0;
-		// clear CANINTF.RX0IF
-		mcp2515_bit_modify(MCP_CANINTF, 0x01, 0x00);
-	}
-	else if (interrupt & MCP_RX1IF){
-		interrupt_flag = RX1;
-		// clear CANINTF.RX1IF
-		mcp2515_bit_modify(MCP_CANINTF, 0x02, 0x00);
-	}
-}

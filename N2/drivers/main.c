@@ -31,11 +31,12 @@ int main(void) {
 	//------------CAN TEST------------//
 	
 	CAN_Init();
+	CAN_message send;
 	CAN_message rec;
 
-	//can_msg_send.id=0x01;
-	// can_msg_send.length=1;
-	// can_msg_send.data[0]=4;
+	//send.id=0x01;
+	//send.length=1;
+	//send.data[0]=4;
 
 	//------------SPI TEST------------//
 	// char SPI_MOSI = 'a';
@@ -43,8 +44,11 @@ int main(void) {
 	
 	while(1){
 		
+		//CAN_msgSend(&send);
+		//printf("sent:%d\r\n", send.data[0]);
 		rec = CAN_msgRec();
-		printf("received msg:%d\r\n", rec.data[0]);
+		printf("received:%d\r\n", rec.data[0]);
+		_delay_ms(2000);
 		
 		//------------CAN TEST------------//
 		// CAN_message_send(&can_msg_send);

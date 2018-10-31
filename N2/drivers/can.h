@@ -29,7 +29,7 @@ enum interrupt_flags {no_flag, RX0, RX1};
 #define CAN_NO_MESSAGE		0x0A	//10
 
 
-int CAN_Init();
+void CAN_Init();
 void CAN_msgSend(CAN_message *message);
 CAN_message CAN_msgRec();
 //void CAN_handle_interrupt(can_msg *msg);
