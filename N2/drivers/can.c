@@ -19,7 +19,7 @@ ISR(INT0_vect){
 
 	if (interrupt & MCP_RX0IF){
 		interrupt_flag = RX0;
-		//printf("RX0 entered\r\n");
+		printf("RX0 entered\r\n");
 		// clear CANINTF.RX0IF
 		mcp2515_bit_modify(MCP_CANINTF, 0x01, 0x00);
 	}
@@ -44,11 +44,12 @@ void CAN_Init() {
 	mcp2515_bit_modify(MCP_RXB1CTRL, MCP_FILTER_OFF, MCP_FILTER_OFF);
 	
 	// Rollover enable
-	mcp2515_bit_modify(MCP_RXB0CTRL, MCP_ROLLOVER, MCP_ROLLOVER);
-	mcp2515_bit_modify(MCP_RXB1CTRL, MCP_ROLLOVER, MCP_ROLLOVER);
+	//mcp2515_bit_modify(MCP_RXB0CTRL, MCP_ROLLOVER, MCP_ROLLOVER);
+	//mcp2515_bit_modify(MCP_RXB1CTRL, MCP_ROLLOVER, MCP_ROLLOVER);
 	
 	// Interrupt pin (enable CANINTE.RXnIE)
 	mcp2515_write(MCP_CANINTE, MCP_RX_INT);
+	mcp2515_write(MCP_CANINTE, MCP_TX_INT);
 
 	// Low INT0 generates interrupt request
 	EICRA |= (0 << ISC01) | (0 << ISC00);
@@ -56,10 +57,10 @@ void CAN_Init() {
 	EIMSK |= (1 << INT0);
 
 	// Set to normal mode
-	//mcp2515_bit_modify(MCP_CANCTRL, MODE_MASK, MODE_NORMAL);
+	mcp2515_bit_modify(MCP_CANCTRL, MODE_MASK, MODE_NORMAL);
 
 	// Set to loopback mode
-	mcp2515_bit_modify(MCP_CANCTRL, MODE_MASK, MODE_LOOPBACK);
+	//mcp2515_bit_modify(MCP_CANCTRL, MODE_MASK, MODE_LOOPBACK);
 
 }
 
@@ -83,14 +84,15 @@ void CAN_msgSend(CAN_message *message) {
 CAN_message CAN_msgRec() {
 
 	CAN_message msg;
+	interrupt_flag = RX0;
 
 	switch(interrupt_flag){
 		case no_flag:
-			printf("NO FLAG, NO MESSAGE\r\n");
+			//printf("NO FLAG, NO MESSAGE\r\n");
 			break;
 		case RX0:
 			// RXBnSIDH and RXBnSIDL (id)
-			//printf("ENTERED!\r\n");
+			//printf("RXO INT ENTERED!\r\n");
 			msg.id = (mcp2515_read(MCP_RXB0CTRL + 1) << 3) | (mcp2515_read(MCP_RXB0CTRL + 2) >> 5);
 			// bit 0 to 3 are data length code bits. register + 5 is RXBnDLC (data length)
 			msg.length = (mcp2515_read(MCP_RXB0CTRL + 5) & 0x0F ); 

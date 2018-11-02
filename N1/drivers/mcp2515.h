@@ -172,7 +172,6 @@ Copyright 2003 Kimberly Otten Software Consulting
 
 #include <stdint.h>
 
-
 void mcp2515_N1_select(void);
 void mcp2515_N1_deselect(void);
 

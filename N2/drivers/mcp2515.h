@@ -93,6 +93,9 @@ Copyright 2003 Kimberly Otten Software Consulting
 #define MCP_TX01_MASK	0x14
 #define MCP_TX_MASK		0x54
 
+#define MCP_TXB0EID8	0x33
+#define MCP_TXB0EID0	0x34
+
 // Define SPI Instruction Set
 #define MCP_WRITE		0x02
 
@@ -167,8 +170,7 @@ Copyright 2003 Kimberly Otten Software Consulting
 #define MCP_FILTER_OFF	0x60
 #define MCP_ROLLOVER	0x04
 
-#define MCP_TXB0EID8	0x33
-#define MCP_TXB0EID0	0x34
+#include <stdint.h>
 
 void mcp2515_N1_select(void);
 void mcp2515_N1_deselect(void);

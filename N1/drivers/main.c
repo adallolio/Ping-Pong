@@ -23,17 +23,12 @@
 
 int main(void) {
 
+	cli();
 	//------------UART------------//
 	unsigned long cpu_speed = F_CPU;
     UART_Init(cpu_speed);				// Set clock speed
 	fdevopen(UART_send, UART_receive);  // Connect printf
 
-	//------------INTERRUPTS------------//
-	//DDRD &= ~(1 << PIND2);
-	//GICR |= (1<<INT0);
-	//MCUCR |= (1<<ISC01);
-	//MCUCR &= ~(1<<ISC00);
-	sei();
 
 	//------------ADC------------//
 	ADC_Init();
@@ -65,22 +60,41 @@ int main(void) {
 	CAN_message rec;
 
 	
-	send.id=0x01;
-	send.length=3;
-	send.data[0]=4;
-	send.data[1]=5;
-	send.data[2]=6;
+	//send.id=0x01;
+	//send.length=1;
+	//send.data[0]=4;
+	//send.data[1]=5;
+	//send.data[2]=6;
 
 	//------------SPI TEST------------//
 	// char SPI_MOSI = 'a';
 	// uint8_t SPI_MISO;
 	
+	//------------INTERRUPTS------------//
+	//DDRD &= ~(1 << PIND2);
+	//GICR |= (1<<INT0);
+	//MCUCR |= (1<<ISC01);
+	//MCUCR &= ~(1<<ISC00);
+	sei();
+
 	while(1){
 		//------------JOYSTICK OVER CAN TEST------------//
-		CAN_msgSend(&send);
-		printf("sent msg:%d\r\n", send.data[0]);
-		printf("sent msg:%d\r\n", send.data[1]);
-		printf("sent msg:%d\r\n", send.data[2]);
+		
+		//CAN_msgSend(&send);
+		//printf("sent to N2:%d\r\n", send.data[0]);
+		//printf("sent msg:%d\r\n", send.data[1]);
+		//printf("sent msg:%d\r\n", send.data[2]);
+		//_delay_ms(10);
+		//rec = CAN_msgRec();
+		//printf("from node 2:%d\r\n", rec.data[0]);
+		//printf("Rec1:%d\r\n", rec.data[1]);
+		//printf("Rec2:%d\r\n", rec.data[2]);
+
+		_delay_ms(1000);
+
+		uint8_t can_stat_reg = mcp2515_read_status();
+		_delay_ms(10);
+		printf("CAN_STAT: %d\r\n", can_stat_reg);
 		_delay_ms(1000);
 		
 		//------------JOYSTICK TEST------------//

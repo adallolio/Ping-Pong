@@ -6,7 +6,7 @@
 typedef struct {
 	unsigned int id;
 	uint8_t length;		// max 8
-	uint8_t data[1];
+	uint8_t data[8];
 	} CAN_message;
 	
 enum interrupt_flags {no_flag, RX0, RX1};

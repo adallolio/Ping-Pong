@@ -10,7 +10,7 @@ enum interrupt_flags {no_flag, RX0, RX1};
 typedef struct {
 	int id;				// 5 bytes for standard identifier
 	uint8_t length;		// Number of data bytes
-	int8_t data[8];
+	uint8_t data[8];
 } CAN_message;
 
 int CAN_Init(void);

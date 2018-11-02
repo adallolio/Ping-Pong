@@ -12,9 +12,6 @@
 #include <avr/interrupt.h>
 #include <stdint.h>
 
-//#include "font_norm.h"
-
-
 int main(void) {
 	cli();
 
@@ -37,7 +34,7 @@ int main(void) {
 
 	send.id=0x01;
 	send.length=1;
-	send.data[0]=4;
+	send.data[0]=5;
 
 
 	//DDRD &= ~(1<<PIND0);
@@ -49,17 +46,35 @@ int main(void) {
 	// char SPI_MOSI = 'a';
 	// uint8_t SPI_MISO;
 
-	sei();
+	//sei();
 	
 	while(1){
 		
 		
 		CAN_msgSend(&send);
-		printf("sent:%d\r\n", send.data[0]);
-		rec = CAN_msgRec();
-		printf("received:%d\r\n", rec.data[0]);
-		_delay_ms(2000);
+		printf("sent to N1:%d\r\n", send.data[0]);
+		_delay_ms(1000);
 		
+		/*
+		rec = CAN_msgRec();
+		_delay_ms(10);
+		printf("received by N1:%d\r\n", rec.data[0]);
+		_delay_ms(1000);
+		*/
+
+		/*
+		uint8_t can_stat_reg = mcp2515_read(MCP_CANSTAT);
+		_delay_ms(10);
+		printf("CAN_STAT: %x\r\n", can_stat_reg);
+		_delay_ms(1000);
+		*/
+		
+		/*
+		uint8_t can_stat_reg = mcp2515_read_status();
+		_delay_ms(10);
+		printf("CAN_STAT: %d\r\n", can_stat_reg);
+		_delay_ms(1000);
+		*/
 		
 		/*
 		mcp2515_write(MCP_CANCTRL, 7);

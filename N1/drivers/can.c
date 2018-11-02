@@ -28,22 +28,22 @@ ISR(INT0_vect){
 	uint8_t interrupt = mcp2515_read(MCP_CANINTF);
 
 	if (interrupt & MCP_RX0IF){
-		printf("Send RX0\r\n");
+		//printf("Send RX0\r\n");
 		interrupt_flag = RX0;
 		// clear CANINTF.RX0IF
 		mcp2515_bit_modify(MCP_CANINTF, 0x01, 0x00);
 	}
 	else if (interrupt & MCP_RX1IF){
 		interrupt_flag = RX1;
-		printf("Send RX1\r\n");
+		//printf("Send RX1\r\n");
 		// clear CANINTF.RX1IF
 		mcp2515_bit_modify(MCP_CANINTF, 0x02, 0x00);
 	}
 	if(MCP_CANINTF & 0x04){
 		//printf("Send INT\r\n");
 		//clear send INT
-		mcp2515_bit_modify(MCP_CANINTF,0x04,0);
-	}	
+		mcp2515_bit_modify(MCP_CANINTF,0x04,0x00);
+	}
 }
 
 int CAN_Init(void) {
@@ -56,8 +56,8 @@ int CAN_Init(void) {
 	mcp2515_bit_modify(MCP_RXB0CTRL, MCP_FILTER_OFF, MCP_FILTER_OFF);
 	mcp2515_bit_modify(MCP_RXB1CTRL, MCP_FILTER_OFF, MCP_FILTER_OFF);
 	// Rollover enable
-	mcp2515_bit_modify(MCP_RXB0CTRL, MCP_ROLLOVER, MCP_ROLLOVER);
-	mcp2515_bit_modify(MCP_RXB1CTRL, MCP_ROLLOVER, MCP_ROLLOVER);
+	//mcp2515_bit_modify(MCP_RXB0CTRL, MCP_ROLLOVER, MCP_ROLLOVER);
+	//mcp2515_bit_modify(MCP_RXB1CTRL, MCP_ROLLOVER, MCP_ROLLOVER);
 	
 	//Enable interrupt when message is received (RX0IE = 1)
 	//mcp2515_bit_modify(MCP_CANINTE, 0x01, 1);
@@ -84,36 +84,6 @@ int CAN_Init(void) {
 void CAN_msgSend(CAN_message *message) {
 	uint8_t i;
 	
-	//Check if there is no pending transmission
-	/*
-	if (CAN_transmit_complete()) {
-		
-		//Set the message id
-		//bit 7-0 SID<10:3>: Standard Identifier bits
-		mcp2515_write(MCP_TXB0SIDH, (int8_t)(message->id >> 3));
-		// bit 7-5 SID<2:0>: Standard Identifier bits
-		mcp2515_write(MCP_TXB0SIDL, (int8_t)(message->id << 5));
-		
-		//Set data length and use data frame (RTR = 0)
-		mcp2515_write(MCP_TXB0DLC, (0x0F) & (message->length));
-
-		//Set data bytes (max. 8 bytes)
-		for (i = 0; i < message->length; i++) {
-			// write base address + data index, then data index as data
-			mcp2515_write(MCP_TXB0D0 + i, message->data[i]);
-		}
-		
-		//Request to send via TX0, 
-		//Bit 0 used to request message transmission of TXB0 buffer (on falling edge)
-		mcp2515_request_to_send(1);
-		
-	} else {
-		if (CAN_error() < 0) {
-			return -1;
-		}
-	}
-	*/
-	
 	// Write ID to TXB0SIDH
 	mcp2515_write(MCP_TXB0SIDH, (message->id) >> 3);
 	// Write 0 to TXB0SIDL and extended identifier registers
@@ -127,11 +97,8 @@ void CAN_msgSend(CAN_message *message) {
 	for (int i = 0; i < message->length; i++){
 		mcp2515_write(MCP_TXB0SIDH + 5 + i, message->data[i] );
 	}
-	
-	//printf("CANINTF b4 RTS: %d\r\n",MCP_CANINTF);
-	mcp2515_request_to_send(MCP_RTS_TX0);
-	//printf("CANINTF after RTS: %d\r\n",MCP_CANINTF);
 
+	mcp2515_request_to_send(MCP_RTS_TX0);
 }
 
 
@@ -171,6 +138,7 @@ CAN_message CAN_msgRec() {
 	*/
 
 	CAN_message msg;
+	interrupt_flag = RX0;
 
 	switch(interrupt_flag){
 		case no_flag:

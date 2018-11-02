@@ -103,7 +103,8 @@ uint8_t mcp2515_read_status(void) {
     uint8_t status;
     
     mcp2515_N1_select();
-    status = SPI_Transcieve(MCP_READ_STATUS);       // Send read status command byte, return status
+    SPI_Transcieve(MCP_READ_STATUS); // Send read status command byte, return status
+    status =  SPI_Transcieve(0);
     mcp2515_N1_deselect();
     
     return status;
