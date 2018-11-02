@@ -12,12 +12,13 @@
 
 int SPI_Init(void) {
     /* Set MOSI, SCK, SS output, all others input */
-    DDRB |= (1 << DDB2)|(1 << DDB1)|(1 << DDB0) | (1 << DDB7); // or DDB?
+    DDRB = (1 << PB2)|(1 << PB1)|(1 << PB0)|(1 << PB7);
+
+    //Set MISO as input
+    DDRB &= ~(1<<PB3);
     
     // Enable SPI, Master, set clock rate
-    SPCR = (1 << MSTR)|(1 << SPR0);
-    
-    SPCR |= (1 << SPE);
+    SPCR = (1 << MSTR)|(1 << SPR0)|(1 << SPE);
 
     /* Clock polarity = 0, clk phase = 0 */
     SPCR &= ~(1 << CPOL);

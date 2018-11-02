@@ -16,11 +16,12 @@ uint8_t mcp2515_Init(void)  {
 	
 	SPI_Init();             //Initialize SPI driver
 	mcp2515_reset();        //Reset the CAN controller
+    _delay_ms(10);
 	
 	//Self-test
 	value = mcp2515_read(MCP_CANSTAT);
 	if ((value & MODE_MASK) != MODE_CONFIG) {
-		printf("MCP2515 is NOT in configuration mode after reset!\n\r");
+		//printf("MCP2515 is NOT in configuration mode after reset!\n\r");
 		
         return 1;
 	}
@@ -29,8 +30,7 @@ uint8_t mcp2515_Init(void)  {
 }
 
 
-void mcp2515_N1_select(void)
-{
+void mcp2515_N1_select(void) {
     // Select CAN-controller, pull CS low
     clear_bit(PORTB, PB7);
 }
@@ -43,13 +43,14 @@ void mcp2515_N1_deselect(void) {
 
 
 int mcp2515_read(uint8_t address) {
-    uint8_t result;
+    uint8_t rec;
     mcp2515_N1_select();
     SPI_Transcieve(MCP_READ);         // Send read instruction
-    result = SPI_Transcieve(address); // Send address
+    SPI_Transcieve(address); // Send address
+    rec = SPI_Transcieve(0);
     mcp2515_N1_deselect();
     
-    return result;
+    return rec;
 }
 
 
@@ -94,7 +95,8 @@ uint8_t mcp2515_read_status(void) {
     uint8_t status;
     
     mcp2515_N1_select();
-    status = SPI_Transcieve(MCP_READ_STATUS);       // Send read status command byte, return status
+    SPI_Transcieve(MCP_READ_STATUS);       // Send read status command byte, return status
+    status = SPI_Transcieve(0);
     mcp2515_N1_deselect();
     
     return status;
