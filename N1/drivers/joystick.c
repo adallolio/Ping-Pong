@@ -27,10 +27,9 @@ static int central_y = 127;
 
 // Read ADC.
 Joy_position Joy_Read(){
-	// Define new struct.
-	Joy_position pos;
-	// Read ADC values.
-	pos.y = ADC_Read('y');
+
+	Joy_position pos;	// Define new struct.
+	pos.y = ADC_Read('y'); // Read ADC values.
 	_delay_ms(1);
 	pos.x = ADC_Read('x');
 	//printf("X position: %d\n\r", pos.x);
@@ -84,7 +83,7 @@ void Joy_Init() {
 }
 
 int Joy_Button() {
-	if( !(PINB & (1 << PB3)) ) {
+	if( (PINB & (1 << PB1)) ) {
 		return 1;
 	}
 	return 0;

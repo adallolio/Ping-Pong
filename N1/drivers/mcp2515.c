@@ -1,15 +1,14 @@
 // MCP2515.c
 // Richard McCrae-Lauba
 
-//#include "../misc/bit_manipulation.h"
-#include "spi.h"
-#include "mcp2515.h"
-#include "../misc/memory_mapping.h"
-#include "../misc/macros.h"
 #include <avr/io.h>
 #include <stdio.h>
 #include <util/delay.h>
-
+//#include "../misc/bit_manipulation.h"
+#include "../misc/memory_mapping.h"
+#include "../misc/macros.h"
+#include "spi.h"
+#include "mcp2515.h"
 
 
 uint8_t mcp2515_Init(void) {
@@ -32,14 +31,12 @@ uint8_t mcp2515_Init(void) {
 
 void mcp2515_N1_select(void) {
     // Select CAN-controller, pull CS low
-    //clear_bit(PORTB, PB4);
     PORTB &= ~(1 << PB4);
 }
 
 
 void mcp2515_N1_deselect(void) {
     // Deselect CAN-controller, pull CS high
-    //set_bit(PORTB, PB4);
     PORTB |= (1 << PB4);
 }
 
@@ -74,30 +71,12 @@ uint8_t mcp2515_reset(void) {
 }
 
 
-uint8_t mcp2515_request_to_send(uint8_t command) {
-    /* command arg decides which transmit buffer(s) are enabled to send, here TX0*/
-    /*
-    if (command <= 7){
-        // Request to Send via TX0 if cmd = 1
-        command = MCP_RTS_TX0 | command;
-    }
-    // command ignored if MCP_RTS LSB =0, e.g. 
-    //if command arg is invalid, wrong TXn
-    else{
-        command = MCP_RTS_TX0;
-    }
-   
+uint8_t mcp2515_request_to_send(uint8_t buffer) {
     mcp2515_N1_select();
-    SPI_Transcieve(command);
-    mcp2515_N1_deselect();
-    
-    return 0;
-    */
-    command = command | 0x01;
-    mcp2515_N1_select();
-    SPI_Transcieve(command);
+    SPI_Transcieve(buffer);
     mcp2515_N1_deselect();
 }
+
 
 uint8_t mcp2515_read_status(void) {
     uint8_t status;
@@ -109,6 +88,7 @@ uint8_t mcp2515_read_status(void) {
     
     return status;
 }
+
 
 int mcp2515_bit_modify(uint8_t address, uint8_t mask, uint8_t data) {
     mcp2515_N1_select();

@@ -184,7 +184,6 @@ void MENU_select() {
 void MENU_nav() {
 	switch (Joy_getDir()){
 		case WEST:
-			
 			if (currMenu->parent != NULL){
 				line = 1;
 				currMenu = currMenu->parent;
@@ -193,8 +192,8 @@ void MENU_nav() {
 				while(Joy_getDir() == WEST){}
 			}
 			break;
+
 		case NORTH:
-			
 			if (line > 1){
 				line = line - 1;
 				currChild = currMenu->child[line - 1];
@@ -202,8 +201,8 @@ void MENU_nav() {
 				while(Joy_getDir() == NORTH){}
 			}
 			break;
+
 		case SOUTH:
-			
 			if (line < currMenu->child_num){
 				line = line + 1;
 				currChild = currMenu->child[line - 1];
@@ -211,9 +210,12 @@ void MENU_nav() {
 				while(Joy_getDir() == SOUTH){}
 			}
 			break;
+
 		default:
 			break;
 	}
+
+	
 }
 
 

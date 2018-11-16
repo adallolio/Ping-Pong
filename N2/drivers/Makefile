@@ -1,5 +1,5 @@
 # List all source files to be compiled; separate with space
-SOURCE_FILES := main.c uart.c spi.c mcp2515.c can.c
+SOURCE_FILES := main.c uart.c spi.c mcp2515.c can_driver.c pwm.c servo.c adc.c ir.c button.c TWI_Master.c dac.c motor.c
 
 # Set this flag to "yes" (no quotes) to use JTAG; otherwise ISP (SPI) is used
 PROGRAM_WITH_JTAG := yes
@@ -13,7 +13,7 @@ endif
 BUILD_DIR := build
 TARGET_CPU := atmega2560
 TARGET_DEVICE := m2560
-F_CPU := 16000000 # Modify if changing device!!
+F_CPU := 16000000 
 		
 CC := avr-gcc
 CFLAGS := -O -std=c11 -DF_CPU=$(F_CPU) -mmcu=$(TARGET_CPU) -u vfprintf -lprintf_flt

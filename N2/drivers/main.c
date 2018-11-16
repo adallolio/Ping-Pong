@@ -1,101 +1,152 @@
-// Alberto Dallolio - Main N1
+// Alberto Dallolio - Main N2
 
-#include "../misc/bit_manipulation.h"
-#include "../misc/macros.h"
-#include "uart.h"
-#include "spi.h"
-#include "mcp2515.h"
-#include "can.h"
 #include <stdio.h>
 #include <avr/io.h>
 #include <util/delay.h>
 #include <avr/interrupt.h>
 #include <stdint.h>
+#include "../misc/bit_manipulation.h"
+#include "../misc/macros.h"
+#include "uart.h"
+#include "spi.h"
+#include "mcp2515.h"
+#include "can_driver.h"
+#include "pwm.h"
+#include "servo.h"
+#include "adc.h"
+#include "ir.h"
+#include "button.h"
+#include "motor.h"
+#include "dac.h"
+
 
 int main(void) {
-	cli();
-
-	//------------UART------------//
+	
+	//------------INITIALIZE------------//
 	unsigned long cpu_speed = F_CPU;
     UART_Init(cpu_speed);				// Set clock speed
 	fdevopen(UART_send, UART_receive);  // Connect printf
 
-	//------------ADC------------//
-	//ADC_Init();
-	
+	CAN_init();
+	ADC_init();
+	servo_init(cpu_speed);
 
-	//------------CAN TEST------------//
-	
-	CAN_Init();
-	//mcp2515_Init();
-	//SPI_Init();
-	CAN_message send;
-	CAN_message rec;
+	//------------INTERRUPTS------------//
+	//sei();
+
+	//-------------CAN TEST-------------//
+	can_msg_t send;
+	can_msg_t rec;
+	can_msg_t joystick;
+
+	send.id=1;
+	send.length=1;
+	send.data[0]=4;
+
+	//button_init();
+
+	DAC_init();
+	motor_init();
+
+/*
+	rec.id=0;
+	rec.length=0;
+	rec.data[8] = {0};
 
 	send.id=0x01;
-	send.length=1;
-	send.data[0]=5;
+	send.length=3;
+	send.data[0]=10;
+	send.data[1]=11;
+	send.data[2]=12;
 
-
-	//DDRD &= ~(1<<PIND0);
-	//GICR |= (1<<INT0);
-	//MCUCR |= (0<<ISC01)|(0<<ISC00);
-
-
-	//------------SPI TEST------------//
-	// char SPI_MOSI = 'a';
-	// uint8_t SPI_MISO;
-
-	//sei();
+	joystick.id = 0;
+	joystick.length = 0;
+	joystick.data[8] = {0};
+*/
 	
+	int lives = 10;
+
 	while(1){
+		//-------------IR GAME TEST-------------//
 		
+		//ADC_channelRead(IR);
+/*	
+		if (lives>1){
+			lives = IR_inGame(lives);
+		}
+		else{
+			printf("Game over!\r\n");
+			break;
+		}
+*/
 		
-		CAN_msgSend(&send);
-		printf("sent to N1:%d\r\n", send.data[0]);
-		_delay_ms(1000);
+		//_delay_ms(500);
 		
-		/*
-		rec = CAN_msgRec();
-		_delay_ms(10);
-		printf("received by N1:%d\r\n", rec.data[0]);
-		_delay_ms(1000);
-		*/
+		//_delay_ms(2500);
 
-		/*
-		uint8_t can_stat_reg = mcp2515_read(MCP_CANSTAT);
-		_delay_ms(10);
-		printf("CAN_STAT: %x\r\n", can_stat_reg);
-		_delay_ms(1000);
-		*/
+		//button_read();
+
+		//-------------PWM/SERVO TEST-------------//
+
+		//set_servo(ADC_channelRead(JOY_SL));
+		//motorSpeed(ADC_channelRead(JOY_SL1));
 		
-		/*
-		uint8_t can_stat_reg = mcp2515_read_status();
-		_delay_ms(10);
-		printf("CAN_STAT: %d\r\n", can_stat_reg);
-		_delay_ms(1000);
-		*/
-		
-		/*
-		mcp2515_write(MCP_CANCTRL, 7);
-		_delay_ms(10);
-		uint8_t a = mcp2515_read(MCP_CANCTRL);
-		printf("MCP_CANCTRL: %d\r\n",a);
+		//motorSpeed(ADC_channelRead(JOY_SL_L));
+		//_delay_ms(20);
+		//set_servo(ADC_channelRead(JOY_SL_R));
+		//ADC_channelRead(JOY_SL2);
+		//_delay_ms(500);
+
+
+		//-------------MOTOR TEST-------------//
+
+/*
+		motorSpeed(ADC_channelRead(JOY_AX));
+		//ADC_channelRead(JOY_SL);
+		_delay_ms(500);
+*/
+
+		//-------------CAN TEST-------------//
+		//_delay_ms(2000);
+		//CAN_message_send(&send);
+		//CAN_msgSend(&send);
+		//printf("sent:%d\r\n", send.data[0]);
+		//rec = CAN_msgRec();
+		//printf("received:%d\r\n", rec.data[0]);
+		//_delay_ms(2000);
+		//CAN_print(&print);
+
+
+		//CAN_send(&send);
+
+		//_delay_ms(10);
+		if (CAN_int_vect()){
+			CAN_read(&rec);
+		}
 		_delay_ms(2000);
-		*/
-		
 
-		//------------CAN TEST------------//
-		// CAN_message_send(&can_msg_send);
-		// can_msg_receive = CAN_data_receive();
-		
-		
-		//------------SPI TEST------------//
-		//SPI_MISO = SPI_Transcieve(SPI_MOSI);
-		//_delay_ms(2);
+		// CAN register tests
+/*		printf("CANINTF: %x",MCP_CANINTF);
+		printf("\n\r");
+		printf("CANSTAT: %x",MCP_CANSTAT);
+		printf("\n\r");
+		printf("EFLG: %x",MCP_EFLG);
+		printf("\n\r");
+*/
+		// Joystick position over CAN
+/*		CAN_receive(&msg);
+		if msg.id == JOY_POS{
+			printf("Booyah bitches\n\r");
+			CAN_print(&msg);
+			printf("\n\r");
+		}
+		else{
+			printf("Joystick positions not received\n\r");
+			CAN_print(&msg);
+			printf("\n\r");
+		}
+*/
 	}
 
-
-	
 	return 0;
 }

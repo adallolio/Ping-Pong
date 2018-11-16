@@ -6,7 +6,7 @@
 typedef struct {
 	unsigned int id;
 	uint8_t length;		// max 8
-	uint8_t data[1];
+	uint8_t data[8];
 	} CAN_message;
 	
 enum interrupt_flags {no_flag, RX0, RX1};
@@ -35,58 +35,3 @@ CAN_message CAN_msgRec();
 //void CAN_handle_interrupt(can_msg *msg);
 
 #endif /* CAN_H_ */
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-/*
-
-
-//CAN.h -- N2
-//Richard McCrae-Lauba
-
-#ifndef CAN_H_
-#define CAN_H_
-
-
-typedef struct CAN_message{
-	int id;				// 5 bytes for standard identifier
-	uint8_t length;		// Number of data bytes
-	uint8_t data[8];
-} CAN_message;
-
-// typedef enum tag_CAN_msg_id{
-// 	PONG_START = 0,
-// 	PONG_STOP = 1,
-// 	PONG_INSTR = 2
-// }CAN_msg_id;
-
-static volatile uint8_t CAN_RX_flag = 0;
-
-void CAN_Init();
-int CAN_message_send(CAN_message* msg);
-uint8_t CAN_receive(CAN_message* msg);
-void CAN_print(CAN_message* msg);
-int CAN_error(void);
-int CAN_transmit_complete(void);
-ISR(INT2_vect);
-
-
-#endif
-
-*/

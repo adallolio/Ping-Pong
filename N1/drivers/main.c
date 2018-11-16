@@ -1,6 +1,6 @@
 // Alberto Dallolio - Main N1
 
-//#include "../misc/bit_manipulation.h"
+#include "../misc/bit_manipulation.h"
 #include <stdio.h>
 #include <avr/io.h>
 #include <util/delay.h>
@@ -14,7 +14,7 @@
 #include "menu.h"
 #include "spi.h"
 #include "mcp2515.h"
-#include "can.h"
+#include "can_driver.h"
 #include "../misc/memory_mapping.h"
 #include "../misc/macros.h"
 
@@ -23,16 +23,14 @@
 
 int main(void) {
 
-	cli();
+	//cli();
 	//------------UART------------//
 	unsigned long cpu_speed = F_CPU;
     UART_Init(cpu_speed);				// Set clock speed
 	fdevopen(UART_send, UART_receive);  // Connect printf
 
-
 	//------------ADC------------//
 	ADC_Init();
-	
 	
 	//------------JOYSTICK TEST------------//
 	Joy_Init();
@@ -49,22 +47,10 @@ int main(void) {
 	//DDRA = 0xFF;
 	
 	//------------OLED and MENU------------//
-	OLED_Init();
-	//MENU_Init();
+	MENU_Init();
 	
-
 	//------------CAN TEST------------//
-	
-	CAN_Init();
-	CAN_message send;
-	CAN_message rec;
-
-	
-	//send.id=0x01;
-	//send.length=1;
-	//send.data[0]=4;
-	//send.data[1]=5;
-	//send.data[2]=6;
+	CAN_init();
 
 	//------------SPI TEST------------//
 	// char SPI_MOSI = 'a';
@@ -72,76 +58,60 @@ int main(void) {
 	
 	//------------INTERRUPTS------------//
 	//DDRD &= ~(1 << PIND2);
-	//GICR |= (1<<INT0);
-	//MCUCR |= (1<<ISC01);
-	//MCUCR &= ~(1<<ISC00);
-	sei();
+	//sei();
 
+	can_msg_t send;
+	can_msg_t rec;
+	can_msg_t joystick;
+
+	send.id=1;
+	send.length=1;
+	send.data[0]=4;
+
+	//joystick.id=JOY_POS;
+	//joystick.length=2;
+
+	
 	while(1){
-		//------------JOYSTICK OVER CAN TEST------------//
+
+		CAN_send(&send);
 		
-		//CAN_msgSend(&send);
-		//printf("sent to N2:%d\r\n", send.data[0]);
-		//printf("sent msg:%d\r\n", send.data[1]);
-		//printf("sent msg:%d\r\n", send.data[2]);
 		//_delay_ms(10);
-		//rec = CAN_msgRec();
-		//printf("from node 2:%d\r\n", rec.data[0]);
-		//printf("Rec1:%d\r\n", rec.data[1]);
-		//printf("Rec2:%d\r\n", rec.data[2]);
-
-		_delay_ms(1000);
-
-		uint8_t can_stat_reg = mcp2515_read_status();
-		_delay_ms(10);
-		printf("CAN_STAT: %d\r\n", can_stat_reg);
-		_delay_ms(1000);
+		//if (CAN_int_vect()){
+		//	CAN_read(&rec);
+		//}
 		
-		//------------JOYSTICK TEST------------//
-		// x = ADC_Read('x');
-		// printf("X position: %d\n\r", x);
-		// y = ADC_Read('y');
-		// printf("Y position: %d\n\r", y);
-
-		//Joy_getDir();
+		_delay_ms(2000);
+		//CAN_receive(&rec);
+		//CAN_print(&rec);
 		
-		// int btn = Joy_Button();
-		// if(btn==0){
-		// 	printf("Joystick Button Pressed!\n\r");
-		// }
-		
-		
-		//------------TOUCH TEST------------//
-		//TOUCH_getPos();
-		/*
-		touch_btn = TOUCH_Button();
-		if(touch_btn==1){
-			printf("Touch Button Pressed!\n\r");
-		}
-		*/
-		//l = ADC_Read('l');
-		//printf("L: %d\n\r", l);
-		//r = ADC_Read('r');
-		//printf("R: %d\n\r", r);
-
-
-		//------------OLED------------//
-		//OLED_printf(can_msg_receive.data);
-		//_delay_ms(2000);
-		//OLED_reset();
-		//_delay_ms(2000);
-
-		//------------MENU------------//
 		//MENU_nav();
 		//MENU_select();
 		
-		
-		//------------SPI TEST------------//
-		//SPI_MISO = SPI_Transcieve(SPI_MOSI);
-		//_delay_ms(2);
+		// CAN register testing
+/*		printf("CANINTF: %d",MCP_CANINTF);
+		printf("\n\r");
+		printf("CANSTAT: %d",MCP_CANSTAT);
+		printf("\n\r");
+		printf("EFLG: %d",MCP_EFLG);
+		printf("\n\r");
+*/
+		// Joystick over CAN
+/*		joystick.data[0] = Joy_Read.x;
+		joystick.data[1] = Joy_Read.y;
+		_delay_ms(10);
+		CAN_message_send(joystick);
+*/
 	}
 
-
-	
 	return 0;
 }
+
+/*
+Sleep mode 
+Bit 5 – SE: Sleep Enable, MCUCR
+The SE bit must be written to logic one to make the MCU enter the sleep mode when the SLEEP
+instruction is executed. To avoid the MCU entering the sleep mode unless it is the programmer’s
+purpose, it is recommended to write the Sleep Enable (SE) bit to one just before the execution of
+the SLEEP instruction and to clear it immediately after waking up.
+*/

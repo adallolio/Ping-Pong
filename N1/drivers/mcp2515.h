@@ -64,6 +64,7 @@ Copyright 2003 Kimberly Otten Software Consulting
 #define MCP_TXB0SIDL	0x32        // TX0 Standard ID Low
 #define MCP_TXB0DLC		0x35        // TX0 message length
 #define MCP_TXB0D0		0x36        // TX0 data register
+//#define MCP_TXB0Dm 		0x36
 
 #define MCP_TXB1CTRL	0x40
 #define MCP_TXB1SIDH	0x41
@@ -78,6 +79,7 @@ Copyright 2003 Kimberly Otten Software Consulting
 #define MCP_RXB0SIDL	0x62        // RX0 Standard ID Low
 #define MCP_RXB0DLC		0x65        // RX0 message length
 #define MCP_RXB0D0		0x66        // RX0 data register
+//#define MCP_RXB0DM		0x66        // RX0 data register
 
 #define MCP_RXB1CTRL	0x70
 #define MCP_RXB1SIDH	0x71
