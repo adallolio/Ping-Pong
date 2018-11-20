@@ -17,7 +17,7 @@ menu_item_info *currChild;
 int line;
 
 
-menu_item_info mainMenu, playGame, scores, settings, stop, normalSpeed, fastSpeed, clearScores, contrastLevel, contrastLow, contrastMedium, contrastHigh, invertScreen;
+menu_item_info mainMenu, playGame, scores, settings, stop, gameSpeed, normalSpeed, fastSpeed, clearScores, contrastLevel, contrastLow, contrastMedium, contrastHigh, invertScreen;
 /*
 mainMenu, playGame, scores, settings, stop, normalSpeed, fastSpeed, 
 clearScores, contrastLevel, contrastLow, contrastMedium, contrastHigh, invertScreen;
@@ -36,15 +36,16 @@ menu_item_info mainMenu ={
 menu_item_info playGame = {
 	.name = "Play game",
 	.parent = &mainMenu,
-	.child[0] = &normalSpeed,
-	.child[1] = &fastSpeed,
-	.child_num = 2,
+	.child[0] = &scores,
+	//.child[0] = &normalSpeed,
+	//.child[1] = &fastSpeed,
+	.child_num = 1,
 };
 
 
 menu_item_info scores ={
 	.name = "Scores",
-	.parent = &mainMenu,
+	.parent = &playGame,
 	.child_num = 0,
 	//.fcnPoint = &HIGHSCORE_print,
 };
@@ -55,20 +56,29 @@ menu_item_info settings ={
 	.child[0] = &clearScores,
 	.child[1] = &contrastLevel,
 	.child[2] = &invertScreen,
+	.child[3] = &gameSpeed,
+	.child_num = 4,
+};
+
+menu_item_info gameSpeed ={
+	.name = "Game speed",
+	.parent = &settings,
+	.child[0] = &normalSpeed,
+	.child[1] = &fastSpeed,
 	.child_num = 2,
 };
 
 
 menu_item_info normalSpeed = {
 	.name = "Normal",
-	.parent = &playGame,
+	.parent = &settings,
 	.child_num = 0,
 	.fcnPoint = &GAME_normalSpeedFcn,
 };
 
 menu_item_info fastSpeed = {
 	.name = "Fast",
-	.parent = &playGame,
+	.parent = &settings,
 	.child_num = 0,
 	.fcnPoint = &GAME_fastSpeedFcn,
 };
@@ -142,6 +152,18 @@ void MENU_print() {
 		OLED_gotoCol(10);
 		OLED_printf("%s", currMenu->child[i]->name);
 	}
+}
+
+void MENU_printGame(){
+	OLED_reset();
+	OLED_pos(3,30);
+	OLED_printf("Time to play!");
+}
+
+void MENU_printGameOver(){
+	OLED_reset();
+	OLED_pos(3,35);
+	OLED_printf("Game over!");
 }
 
 void MENU_highlight() {

@@ -40,25 +40,15 @@ int main(void) {
 
 	//------------TOUCH TEST------------//
 	TOUCH_Init();
-	//uint8_t l;
-	//uint8_t r;
-	//int touch_btn;
-	//_delay_ms(5000);
-	//DDRA = 0xFF;
+	TOUCH_sliderPos sliders;
 	
 	//------------OLED and MENU------------//
 	MENU_Init();
+	menu_item_info *selected;
 	
 	//------------CAN TEST------------//
 	CAN_init();
 
-	//------------SPI TEST------------//
-	// char SPI_MOSI = 'a';
-	// uint8_t SPI_MISO;
-	
-	//------------INTERRUPTS------------//
-	//DDRD &= ~(1 << PIND2);
-	//sei();
 
 	can_msg_t send;
 	can_msg_t rec;
@@ -71,47 +61,104 @@ int main(void) {
 	//joystick.id=JOY_POS;
 	//joystick.length=2;
 
-	
+	GAME_setOpt(menu);
+	int lives = 3;
+
 	while(1){
 
-		CAN_send(&send);
-		
-		_delay_ms(10);
-		if (CAN_int_vect()){
-			CAN_read(&rec);
+		switch (GAME_getOpt()){
+				case menu:
+						MENU_nav();
+						MENU_select();
+						break;
+				case gameInit:
+						//CAN_send(STATE_OPTION_get_speed());
+						MENU_printGame();
+						lives = 3;
+						GAME_setOpt(game);
+						break;
+				case game:
+						//CAN_send();
+						break;
+				case gamePause:
+						if(Joy_Button()){
+							GAME_setOpt(game);
+							MENU_printGame();
+						}
+						break;
+				case gameOver:
+						MENU_printGameOver();
+						_delay_ms(3000);
+						GAME_setOpt(menu);
+						MENU_start();
+						break;
+				default:
+						GAME_setOpt(menu);
+						break;
 		}
-		
-		_delay_ms(2000);
-		//CAN_receive(&rec);
-		//CAN_print(&rec);
-		
-		//MENU_nav();
-		//MENU_select();
-		
-		// CAN register testing
-/*		printf("CANINTF: %d",MCP_CANINTF);
-		printf("\n\r");
-		printf("CANSTAT: %d",MCP_CANSTAT);
-		printf("\n\r");
-		printf("EFLG: %d",MCP_EFLG);
-		printf("\n\r");
+/*
+		CAN_handle_interrupt(&receive);
+		msg_type = receive.data[0];
+		switch (msg_type){
+				case CAN_LIVES:
+							if(remaining_lives > 1 && STATE_OPTION_get() == game){
+								score = score + TIMER_stop();
+								remaining_lives = remaining_lives - 1;
+								STATE_OPTION_set(game_pause);
+								MENU_print_pause_screen(remaining_lives);
+							}
+							else if (STATE_OPTION_get() == game){
+								score = score + TIMER_stop();
+								STATE_OPTION_set(game_over);
+							}
+							break;
+				default:
+							break;
+		}
+		_delay_ms(5);
 */
-		// Joystick over CAN
-/*		joystick.data[0] = Joy_Read.x;
-		joystick.data[1] = Joy_Read.y;
-		_delay_ms(10);
-		CAN_message_send(joystick);
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+		//printf("MCP_CANINTF_OUT: %2x\r\n",mcp2515_read(MCP_CANINTF));
+		//printf("MCP_EFLG_OUT: %2x\r\n",mcp2515_read(MCP_EFLG));
+		//printf("MCP_CANSTAT_OUT: %2x\r\n",mcp2515_read(MCP_CANSTAT));
+/*
+		sliders = TOUCH_getPos();
+		printf("LEFT: %d\r\n", sliders.slider_left);
+		_delay_ms(20);
+		printf("RIGHT: %d\r\n", sliders.slider_right);
+		_delay_ms(500);
+
+		if (CAN_int_vect()){
+			//printf("MCP_CANINTF_IN: %2x\r\n",mcp2515_read(MCP_CANINTF));
+			//printf("MCP_EFLG_IN: %2x\r\n",mcp2515_read(MCP_EFLG));
+			CAN_read(&rec);
+			_delay_ms(500);
+		}
 */
 	}
 
 	return 0;
 }
-
-/*
-Sleep mode 
-Bit 5 – SE: Sleep Enable, MCUCR
-The SE bit must be written to logic one to make the MCU enter the sleep mode when the SLEEP
-instruction is executed. To avoid the MCU entering the sleep mode unless it is the programmer’s
-purpose, it is recommended to write the Sleep Enable (SE) bit to one just before the execution of
-the SLEEP instruction and to clear it immediately after waking up.
-*/

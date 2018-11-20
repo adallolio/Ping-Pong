@@ -21,8 +21,6 @@ void DAC_send(uint8_t data){
 	message[0] = address;
 	message[1] = command;
 	message[2] = data;
-	printf("DAC data:")
-
 	_delay_ms(50);
 
 	TWI_Start_Transceiver_With_Data(message, 3);

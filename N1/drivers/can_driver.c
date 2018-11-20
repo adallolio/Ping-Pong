@@ -15,16 +15,18 @@ volatile uint8_t flag = 0;
 
 ISR(INT0_vect) {
     flag = 1;
+    mcp2515_write(MCP_CANINTF, 0x00);
+    mcp2515_write(MCP_CANINTF, 0x00);
 }
 
 void CAN_init(void){
     mcp2515_Init();
+    mcp2515_write(MCP_CANINTE, MCP_RX_INT);
+
     //printf("Initializing CAN driver...\n\r");
     //_delay_ms(1000);
-    mcp2515_reset();
-    mcp2515_write(MCP_CANCTRL, MODE_LOOPBACK);
+    mcp2515_write(MCP_CANCTRL, MODE_NORMAL);
 
-    mcp2515_write(MCP_CANINTE, MCP_RX_INT);
 
 	// Disable global interrupts
 	cli();
@@ -41,9 +43,9 @@ void CAN_init(void){
 uint8_t CAN_int_vect(){
     if (flag) {
         flag = 0;
-        return 1;
+        return 0;
     }
-    else return 0;
+    else return 1;
 }
 
 void CAN_error(){
@@ -60,15 +62,6 @@ uint8_t CAN_transmit_complete(){
 }
 
 void CAN_send(can_msg_t* msg){
-/*
-    volatile uint8_t buffer = 0;
-
-    buffer += 1;
-    if (buffer > 2)
-    {
-        buffer = 0;
-    }
-*/
 
     /* Arbitration field; set ID and length */
     char id_high = msg->id >> 3;
@@ -104,8 +97,8 @@ void CAN_read(can_msg_t* msg_read){
         msg_read->data[i] = mcp2515_read(MCP_RXB0D0 + i);
     }
 
-    mcp2515_bit_modify(MCP_CANINTF, 1, 0); // set interupt vector 1 to 0
-    mcp2515_bit_modify(MCP_CANINTF, 2, 0); // set interupt vector 2 to 0
+    //mcp2515_bit_modify(MCP_CANINTF, 1, 0); // set interupt vector 1 to 0
+    //mcp2515_bit_modify(MCP_CANINTF, 1, 0); // set interupt vector 2 to 0
 
     printf("received:%d\r\n", msg_read->data[0]);
 }

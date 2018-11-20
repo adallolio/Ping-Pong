@@ -94,7 +94,8 @@ int mcp2515_bit_modify(uint8_t address, uint8_t mask, uint8_t data) {
     mcp2515_N1_select();
     SPI_Transcieve(MCP_BITMOD);       // Send bit modify command to MCP2515
     SPI_Transcieve(address);          // send register address
-    SPI_Transcieve(mask);             // send mask byte. This mask decides which bits in REG to change. "1" allows change, "0" does not
+    SPI_Transcieve(0xFF);
+    //SPI_Transcieve(mask);             // send mask byte. This mask decides which bits in REG to change. "1" allows change, "0" does not
     SPI_Transcieve(data);             // send data byte. Data determines the values of the register to be changed to. 1= set, 0=clear
     mcp2515_N1_deselect();
 

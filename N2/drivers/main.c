@@ -46,28 +46,21 @@ int main(void) {
 
 	//button_init();
 
-	DAC_init();
-	motor_init();
-	PID_init();
+	//DAC_init();
+	//motor_init();
+	//PID_init();
 	//PID_cal();
 
+
+	//rec.id=0;
+	//rec.length=0;
+	//rec.data[8] = {0};
+
 /*
-	rec.id=0;
-	rec.length=0;
-	rec.data[8] = {0};
-
-	send.id=0x01;
-	send.length=3;
-	send.data[0]=10;
-	send.data[1]=11;
-	send.data[2]=12;
-
 	joystick.id = 0;
 	joystick.length = 0;
 	joystick.data[8] = {0};
 */
-	_delay_ms(2500);
-
 	int lives = 10;
 
 	while(1){
@@ -98,8 +91,8 @@ int main(void) {
 		//motorSpeed(ADC_channelRead(JOY_SL_L));
 		//PID(ADC_channelRead(JOY_SL_L));
 		//PID(130);
-		motorSpeed(126);
-		_delay_ms(20);
+		//motorSpeed(126);
+		//_delay_ms(20);
 		//set_servo(ADC_channelRead(JOY_SL_R));
 		//ADC_channelRead(JOY_SL2);
 		//_delay_ms(500);
@@ -114,23 +107,23 @@ int main(void) {
 */
 
 		//-------------CAN TEST-------------//
-		//_delay_ms(2000);
-		//CAN_message_send(&send);
-		//CAN_msgSend(&send);
-		//printf("sent:%d\r\n", send.data[0]);
-		//rec = CAN_msgRec();
-		//printf("received:%d\r\n", rec.data[0]);
-		//_delay_ms(2000);
-		//CAN_print(&print);
 
+		CAN_send(&send);
+		printf("MCP_CANINTF_OUT: %2x\r\n",mcp2515_read(MCP_CANINTF));
+		printf("MCP_EFLG_OUT: %2x\r\n",mcp2515_read(MCP_EFLG));
+		//printf("MCP_CANINTF: %2x\r\n",mcp2515_read(MCP_CANINTF));
+		//printf("MCP_EFLG: %2x\r\n",mcp2515_read(MCP_EFLG));
+		_delay_ms(500);
 
-		//CAN_send(&send);
-
-		//_delay_ms(10);
-		//if (CAN_int_vect()){
-		//	CAN_read(&rec);
-		//}
-		//_delay_ms(2000);
+/*
+		if (CAN_int_vect()){
+			//printf("MCP_CANINTF: %2x\r\n",mcp2515_read(MCP_CANINTF));
+			//printf("MCP_EFLG: %2x\r\n",mcp2515_read(MCP_EFLG));
+			//printf("MCP_CANSTAT: %2x\r\n",mcp2515_read(MCP_CANSTAT));
+			CAN_read(&rec);
+			_delay_ms(500);
+		}
+*/
 
 		// CAN register tests
 /*		printf("CANINTF: %x",MCP_CANINTF);

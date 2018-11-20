@@ -9,7 +9,7 @@ typedef struct menu_item_info menu_item_info;
 typedef struct menu_item_info {
 	char *name;
 	menu_item_info *parent;
-	menu_item_info *child[3];
+	menu_item_info *child[4];
 	int child_num;
 	void (*fcnPoint)(void);
 }menu_item_info;
@@ -18,6 +18,8 @@ typedef struct menu_item_info {
 void MENU_Init();
 void MENU_start();
 void MENU_print();
+void MENU_printGame();
+void MENU_printGameOver();
 void MENU_select();
 void MENU_nav();
 void MENU_highlight();

@@ -13,26 +13,27 @@
 
 volatile uint8_t flag = 0;
 
-ISR(INT2_vect) {
+ISR(INT4_vect) {
     flag = 1;
+    mcp2515_write(MCP_CANINTF, 0x00);
+    mcp2515_write(MCP_CANINTF, 0x00);
 }
 
 void CAN_init(void){
     mcp2515_Init();
     //printf("Initializing CAN driver...\n\r");
     //_delay_ms(1000);
-    mcp2515_reset();
-    mcp2515_write(MCP_CANCTRL, MODE_NORMAL);
-
     mcp2515_write(MCP_CANINTE, MCP_RX_INT);
+    //mcp2515_write(MCP_CANINTE, MCP_TX_INT);
+    mcp2515_write(MCP_CANCTRL, MODE_NORMAL);
 
 	// Disable global interrupts
 	cli();
 	// Interrupt on falling edge PD2
-	set_bit(EICRA, ISC21);
-	clear_bit(EICRA, ISC20);
+	set_bit(EICRB, ISC41);
+	clear_bit(EICRB, ISC40);
 	// Enable interrupt on PD2
-	set_bit(EIMSK,INT2);
+	set_bit(EIMSK,INT4);
 	// Enable global interrupts
     sei();
 }
@@ -95,8 +96,11 @@ void CAN_read(can_msg_t* msg_read){
         msg_read->data[i] = mcp2515_read(MCP_RXB0D0 + i);
     }
 
-    mcp2515_bit_modify(MCP_CANINTF, 1, 0); // set interupt vector 1 to 0
-    mcp2515_bit_modify(MCP_CANINTF, 2, 0); // set interupt vector 2 to 0
-
     printf("received:%d\r\n", msg_read->data[0]);
+
+    //mcp2515_bit_modify(MCP_CANINTF, 1, 0); // set interrupt vector 1 to 0
+    //mcp2515_bit_modify(MCP_CANINTF, 1, 0); // set interrupt vector 2 to 0
+
+    //mcp2515_write(MCP_CANINTF, 0xFF);
+
 }
