@@ -22,7 +22,7 @@ void CAN_init(void){
     //printf("Initializing CAN driver...\n\r");
     //_delay_ms(1000);
     mcp2515_reset();
-    mcp2515_write(MCP_CANCTRL, MODE_NORMAL);
+    mcp2515_write(MCP_CANCTRL, MODE_LOOPBACK);
 
     mcp2515_write(MCP_CANINTE, MCP_RX_INT);
 

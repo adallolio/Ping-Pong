@@ -8,9 +8,11 @@
 #include <avr/io.h>
 #include <util/delay.h>
 #include <stdint.h>
+#include <avr/interrupt.h>
 
 ISR(TIMER2_OVF_vect){
 	timer_flag = 1;
+	//printf("EEEEE");
 }
 
 void PID_init(void){
@@ -24,7 +26,7 @@ void PID_init(void){
 }
 
 void PID_cal(void){
-	motorDir(LEFT);
+	motorDir(WEST);
 	motorSpeed_PID(50);
 	int16_t cur_rot = motorRotation_read();
 	int16_t prev_rot = cur_rot+200;
@@ -39,7 +41,7 @@ void PID_cal(void){
 	_delay_us(500);
 	motorEncoder_reset();
 
-	motorDir(RIGHT);
+	motorDir(EAST);
 	motorSpeed_PID(50);
 	cur_rot = 0;
 	prev_rot = cur_rot-200;
@@ -81,15 +83,16 @@ void PID(uint8_t pos_ref){
 		prev_error = error;
 
 		if (speed < 0){
-			motorDir(LEFT);
+			motorDir(WEST);
 			speed_pid = -speed;
 		}
 		else{
-			motorDir(RIGHT);
+			motorDir(EAST);
 			speed_pid = speed;
 		}
 
 		motorSpeed_PID(speed_pid);
+		printf("SPEED PID: %d\r\n", speed_pid);
 		timer_flag = 0;
 		set_bit(TIMSK2,TOIE2); //Enable timer interrupt again 
 	}

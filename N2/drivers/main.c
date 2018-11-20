@@ -18,6 +18,7 @@
 #include "button.h"
 #include "motor.h"
 #include "dac.h"
+#include "pid.h"
 
 
 int main(void) {
@@ -47,6 +48,8 @@ int main(void) {
 
 	DAC_init();
 	motor_init();
+	PID_init();
+	//PID_cal();
 
 /*
 	rec.id=0;
@@ -63,7 +66,8 @@ int main(void) {
 	joystick.length = 0;
 	joystick.data[8] = {0};
 */
-	
+	_delay_ms(2500);
+
 	int lives = 10;
 
 	while(1){
@@ -92,7 +96,10 @@ int main(void) {
 		//motorSpeed(ADC_channelRead(JOY_SL1));
 		
 		//motorSpeed(ADC_channelRead(JOY_SL_L));
-		//_delay_ms(20);
+		//PID(ADC_channelRead(JOY_SL_L));
+		//PID(130);
+		motorSpeed(126);
+		_delay_ms(20);
 		//set_servo(ADC_channelRead(JOY_SL_R));
 		//ADC_channelRead(JOY_SL2);
 		//_delay_ms(500);
@@ -120,10 +127,10 @@ int main(void) {
 		//CAN_send(&send);
 
 		//_delay_ms(10);
-		if (CAN_int_vect()){
-			CAN_read(&rec);
-		}
-		_delay_ms(2000);
+		//if (CAN_int_vect()){
+		//	CAN_read(&rec);
+		//}
+		//_delay_ms(2000);
 
 		// CAN register tests
 /*		printf("CANINTF: %x",MCP_CANINTF);

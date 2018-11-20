@@ -76,10 +76,10 @@ int main(void) {
 
 		CAN_send(&send);
 		
-		//_delay_ms(10);
-		//if (CAN_int_vect()){
-		//	CAN_read(&rec);
-		//}
+		_delay_ms(10);
+		if (CAN_int_vect()){
+			CAN_read(&rec);
+		}
 		
 		_delay_ms(2000);
 		//CAN_receive(&rec);
