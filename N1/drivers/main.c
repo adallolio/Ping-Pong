@@ -72,7 +72,7 @@ int main(void) {
 						MENU_select();
 						break;
 				case gameInit:
-						//CAN_send(STATE_OPTION_get_speed());
+						//CAN_send(GAME_getOpt());
 						MENU_printGame();
 						lives = 3;
 						GAME_setOpt(game);
