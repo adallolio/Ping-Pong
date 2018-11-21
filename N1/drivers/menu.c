@@ -295,16 +295,22 @@ state GAME_getOpt(){
 void GAME_levelEasy(){
 	GAME_setLives(10);
 	MENU_configApplied();
+	_delay_ms(3000);
+	MENU_print();
 }
 
 void GAME_levelMedium(){
 	GAME_setLives(6);
 	MENU_configApplied();
+	_delay_ms(3000);
+	MENU_print();
 }
 
 void GAME_levelHard(){
 	GAME_setLives(3);
 	MENU_configApplied();
+	_delay_ms(3000);
+	MENU_print();
 }
 
 void GAME_setLives(int new_lives){
