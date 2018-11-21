@@ -1,7 +1,0 @@
-{
-    "files.associations": {
-        "macros.h": "c",
-        "can_driver.h": "c",
-        "uart.h": "c"
-    }
-}

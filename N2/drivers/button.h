@@ -11,6 +11,6 @@
 #include <stdint.h>
 
 void button_init(void);
-void button_read(void);
+void button_shoot(void);
 
 #endif /* BUTTON_H_ */

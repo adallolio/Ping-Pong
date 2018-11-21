@@ -10,9 +10,7 @@
 #include <util/delay.h>
 #include <stdint.h>
 
-
-void IR_init();
-int IR_inGame(int lives);
+int IR_check(void);
 
 
 #endif /* IR_H_ */

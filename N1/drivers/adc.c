@@ -8,6 +8,10 @@
 #include <avr/io.h>
 #include <util/delay.h>
 
+
+/** ADC initialization
+    @return 0
+*/
 int ADC_Init(void) {
 	MCUCR |= (1 << SRE);
 	SFIOR |= (1 << XMM2);
@@ -18,6 +22,10 @@ int ADC_Init(void) {
 	return 0;
 }
 
+/** ADC read function
+    @param ch channel to be read
+    @return *ext_adc pointer to the read channel
+*/
 uint8_t ADC_Read(char ch){
  	
  	// Start address

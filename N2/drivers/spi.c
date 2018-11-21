@@ -39,19 +39,3 @@ uint8_t SPI_Transcieve(uint8_t data) {
     // Return received data
     return(SPDR);
 }
-
-
-// SPI Transmission/reception complete ISR
-/*
-char ISR(SPI_STC_vect)
-{
-    // Code to execute
-    // whenever transmission/reception
-    // is complete.
-    // Do I need to disable global interrupts here?
-    cli();
-    data = SPDR;
-    return(data);
-    sei();
-}
-*/

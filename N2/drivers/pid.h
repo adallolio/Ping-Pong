@@ -4,22 +4,15 @@
 #define PID_H_
 
 //Tuned PID gains
-#define KP 1
+#define KP 100
 #define KI 10
-#define KD 0.01
+#define KD 100
 
-#define dt 0.016
-
-static int16_t rot_max;
-static int16_t rot_min = 0;
-static double integral = 0;
-static int16_t prev_error = 0;
-
-static volatile uint8_t timer_flag = 0;
+#define dt 1 // 0.1*10Hz
 
 void PID_init(void);
-void PID_cal(void);
-void PID(uint8_t pos_ref);
+void PID(int rot, uint8_t pos_ref);
+int PID_ref(uint8_t ref);
 //ISR(TIMER2_OVF_vect);
 
 #endif /* PID_H_ */

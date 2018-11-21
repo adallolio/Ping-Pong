@@ -14,7 +14,7 @@ void button_init(void) {
 	DDRL |= (1<<PL2);
 }
 
-void button_read(void) {
+void button_shoot(void) {
 	if(!(PINL & (1 << PL0))) {
 		PORTL &= ~(1 << PL2);
 	} else {

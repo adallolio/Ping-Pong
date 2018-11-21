@@ -25,11 +25,13 @@ static int central_x = 127;
 static int central_y = 127;
 
 
-// Read ADC.
+/** Read joystick position
+    @return pos position structure
+*/
 Joy_position Joy_Read(){
 
-	Joy_position pos;	// Define new struct.
-	pos.y = ADC_Read('y'); // Read ADC values.
+	Joy_position pos;
+	pos.y = ADC_Read('y');
 	_delay_ms(1);
 	pos.x = ADC_Read('x');
 	//printf("X position: %d\n\r", pos.x);
@@ -39,7 +41,8 @@ Joy_position Joy_Read(){
 }
 
 
-// Calibrate Joystick.
+/** Joystick Calibration
+*/
 void Joy_Cal() {
 
 	//central_pos = Joy_Read(); // to be used by getPos.
@@ -67,6 +70,8 @@ void Joy_Cal() {
 	//printf("JOYSTICK CALIBRATED!\n\r");
 }
 
+/** Joystick Initialization
+*/
 void Joy_Init() {
 
 	// Calibrate the Joystick.
@@ -82,6 +87,8 @@ void Joy_Init() {
 	//set_bit(PORTB, PB3);
 }
 
+/** Joystick Button
+*/
 int Joy_Button() {
 	if( (PINB & (1 << PB1)) ) {
 		return 1;
@@ -89,27 +96,29 @@ int Joy_Button() {
 	return 0;
 }
 
-// Get Joystick position.
+/** Get Joystick Position in Percentage
+*/
 Joy_position Joy_getPos()
 {
 	Joy_position curr_pos = Joy_Read();
 	Joy_position cal_pos;
 
-	//printf("curr X: %d\n\r", curr_pos.x);
-	//printf("curr Y: %d\n\r", curr_pos.y);
+/*
+	printf("curr X: %d\n\r", curr_pos.x);
+	printf("curr Y: %d\n\r", curr_pos.y);
 
-	//cal_pos.x = abs(curr_pos.x) - x_off;
-	//cal_pos.y = abs(curr_pos.y) - y_off;
+	cal_pos.x = abs(curr_pos.x) - x_off;
+	cal_pos.y = abs(curr_pos.y) - y_off;
 
 	
-	//printf("CAL X: %d\n\r", cal_pos.x);
-	//printf("CAL Y: %d\n\r", cal_pos.y);
-	/*
+	printf("CAL X: %d\n\r", cal_pos.x);
+	printf("CAL Y: %d\n\r", cal_pos.y);
+	
 	printf("X offset aa: %d\n\r", x_off);
 	printf("Y offset aa: %d\n\r", y_off);
 	printf("MAX X: %d\n\r", max_pos_x);
 	printf("MAX Y: %d\n\r", max_pos_y);
-	*/
+*/
 
 	
 	float perc_pos_x;
@@ -128,7 +137,9 @@ Joy_position Joy_getPos()
 	return curr_pos;
 }
 
-// Get Joystick direction in human readable form.
+
+/** Get Joystick direction in human readable form.
+*/
 Joy_direction Joy_getDir() {
 
 	Joy_position curr_pos = Joy_getPos();

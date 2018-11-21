@@ -23,47 +23,82 @@
 
 int main(void) {
 	
-	//------------INITIALIZE------------//
+	//------------UART INIT------------//
 	unsigned long cpu_speed = F_CPU;
-    UART_Init(cpu_speed);				// Set clock speed
-	fdevopen(UART_send, UART_receive);  // Connect printf
+    UART_Init(cpu_speed);
+    fdevopen(UART_send, UART_receive);
 
-	CAN_init();
+    //------------ADC INIT------------//
 	ADC_init();
+
+	//------------CAN INIT------------//
+	CAN_init();
+	can_msg_t rec;
+	int msg_type;
+
+	//------------SERVO INIT------------//
 	servo_init(cpu_speed);
 
-	//------------INTERRUPTS------------//
-	//sei();
+	//------------BUTTON INIT------------//
+	button_init();
 
-	//-------------CAN TEST-------------//
-	can_msg_t send;
-	can_msg_t rec;
-	can_msg_t joystick;
+	//------------DAC INIT------------//
+	DAC_init();
 
-	send.id=1;
-	send.length=1;
-	send.data[0]=4;
+	//------------MOTOR INIT------------//
+	MOTOR_init();
+	int rot;
+	int speed = 0;
+	int ir = 0;
+	int pos_reference = 127;
 
-	//button_init();
+	//------------MOTOR CALIBRATION------------//
+	MOTOR_cal();
 
-	//DAC_init();
-	//motor_init();
-	//PID_init();
-	//PID_cal();
+	//------------PID INIT------------//
+	PID_init();
+	PID_ref(pos_reference);
 
 
-	//rec.id=0;
-	//rec.length=0;
-	//rec.data[8] = {0};
-
-/*
-	joystick.id = 0;
-	joystick.length = 0;
-	joystick.data[8] = {0};
-*/
-	int lives = 10;
+	//int lives = 10;
 
 	while(1){
+
+		if (CAN_int_vect()){
+			CAN_read(&rec);
+			msg_type = rec.id;
+			switch(msg_type){
+				case JOYSTICK_ID:
+					pos_reference = PID_ref(rec.data[0]);
+					break;
+				case SLIDERS_ID:
+					set_servo(rec.data[1]); // 1=right slider, 0=left slider.
+					break;
+				case TOUCH_BUTTON_ID:
+					button_shoot();
+					break;
+				default:
+					break;
+			}
+		}
+
+
+		ir = IR_check();
+		CAN_sendIR(ir);
+		
+		rot = MOTOR_rotScaled();
+		if(rot < 0){
+			rot = 0;
+		}
+		if(rot > 255){
+			rot = 255;
+		}
+		
+		PID(rot, pos_reference);
+	}
+
+
+
 		//-------------IR GAME TEST-------------//
 		
 		//ADC_channelRead(IR);
@@ -76,12 +111,6 @@ int main(void) {
 			break;
 		}
 */
-		
-		//_delay_ms(500);
-		
-		//_delay_ms(2500);
-
-		//button_read();
 
 		//-------------PWM/SERVO TEST-------------//
 
@@ -97,25 +126,14 @@ int main(void) {
 		//ADC_channelRead(JOY_SL2);
 		//_delay_ms(500);
 
-
-		//-------------MOTOR TEST-------------//
-
-/*
-		motorSpeed(ADC_channelRead(JOY_AX));
-		//ADC_channelRead(JOY_SL);
-		_delay_ms(500);
-*/
-
 		//-------------CAN TEST-------------//
-
+/*
 		CAN_send(&send);
 		printf("MCP_CANINTF_OUT: %2x\r\n",mcp2515_read(MCP_CANINTF));
 		printf("MCP_EFLG_OUT: %2x\r\n",mcp2515_read(MCP_EFLG));
 		//printf("MCP_CANINTF: %2x\r\n",mcp2515_read(MCP_CANINTF));
 		//printf("MCP_EFLG: %2x\r\n",mcp2515_read(MCP_EFLG));
 		_delay_ms(500);
-
-/*
 		if (CAN_int_vect()){
 			//printf("MCP_CANINTF: %2x\r\n",mcp2515_read(MCP_CANINTF));
 			//printf("MCP_EFLG: %2x\r\n",mcp2515_read(MCP_EFLG));
@@ -125,28 +143,5 @@ int main(void) {
 		}
 */
 
-		// CAN register tests
-/*		printf("CANINTF: %x",MCP_CANINTF);
-		printf("\n\r");
-		printf("CANSTAT: %x",MCP_CANSTAT);
-		printf("\n\r");
-		printf("EFLG: %x",MCP_EFLG);
-		printf("\n\r");
-*/
-		// Joystick position over CAN
-/*		CAN_receive(&msg);
-		if msg.id == JOY_POS{
-			printf("Booyah bitches\n\r");
-			CAN_print(&msg);
-			printf("\n\r");
-		}
-		else{
-			printf("Joystick positions not received\n\r");
-			CAN_print(&msg);
-			printf("\n\r");
-		}
-*/
-	}
-
-	return 0;
+		return 0;
 }

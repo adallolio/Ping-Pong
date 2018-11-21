@@ -102,5 +102,12 @@ void CAN_read(can_msg_t* msg_read){
     //mcp2515_bit_modify(MCP_CANINTF, 1, 0); // set interrupt vector 2 to 0
 
     //mcp2515_write(MCP_CANINTF, 0xFF);
+}
 
+void CAN_sendIR(int ir){
+    can_msg_t send;
+    send.id = ATmega2560_ID;
+    send.data[0] = ir;
+    send.length = 1;
+    CAN_send(&send);
 }

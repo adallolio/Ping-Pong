@@ -15,6 +15,7 @@
 #include "spi.h"
 #include "mcp2515.h"
 #include "can_driver.h"
+#include "timer.h"
 #include "../misc/memory_mapping.h"
 #include "../misc/macros.h"
 
@@ -29,40 +30,31 @@ int main(void) {
     UART_Init(cpu_speed);				// Set clock speed
 	fdevopen(UART_send, UART_receive);  // Connect printf
 
-	//------------ADC------------//
+	//------------ADC INIT------------//
 	ADC_Init();
 	
-	//------------JOYSTICK TEST------------//
+	//------------JOYSTICK INIT------------//
 	Joy_Init();
-	// uint8_t x;
-	// uint8_t y;
-	// int btn;
 
-	//------------TOUCH TEST------------//
+	//------------TOUCH INIT------------//
 	TOUCH_Init();
-	TOUCH_sliderPos sliders;
 	
-	//------------OLED and MENU------------//
+	//------------MENU INIT------------//
 	MENU_Init();
-	menu_item_info *selected;
 	
-	//------------CAN TEST------------//
+	//------------CAN INIT------------//
 	CAN_init();
-
-
 	can_msg_t send;
 	can_msg_t rec;
-	can_msg_t joystick;
 
-	send.id=1;
-	send.length=1;
-	send.data[0]=4;
+	//------------TIMER INIT------------//
+	TIMER_init();
 
-	//joystick.id=JOY_POS;
-	//joystick.length=2;
-
+	//------------GAME SETTINGS INIT------------//
 	GAME_setOpt(menu);
-	int lives = 3;
+	int lives;
+	int life_lost;
+	int score;
 
 	while(1){
 
@@ -73,21 +65,24 @@ int main(void) {
 						break;
 				case gameInit:
 						//CAN_send(GAME_getOpt());
-						MENU_printGame();
-						lives = 3;
+						lives = MENU_printGame();
+						//lives = 3;
+						score = 0;
+						TIMER_start();
 						GAME_setOpt(game);
 						break;
 				case game:
-						//CAN_send();
+						CAN_sendBunch();
 						break;
 				case gamePause:
 						if(Joy_Button()){
 							GAME_setOpt(game);
 							MENU_printGame();
+							TIMER_start();
 						}
 						break;
 				case gameOver:
-						MENU_printGameOver();
+						MENU_printGameOver(score);
 						_delay_ms(3000);
 						GAME_setOpt(menu);
 						MENU_start();
@@ -96,41 +91,27 @@ int main(void) {
 						GAME_setOpt(menu);
 						break;
 		}
-/*
-		CAN_handle_interrupt(&receive);
-		msg_type = receive.data[0];
-		switch (msg_type){
-				case CAN_LIVES:
-							if(remaining_lives > 1 && STATE_OPTION_get() == game){
-								score = score + TIMER_stop();
-								remaining_lives = remaining_lives - 1;
-								STATE_OPTION_set(game_pause);
-								MENU_print_pause_screen(remaining_lives);
-							}
-							else if (STATE_OPTION_get() == game){
-								score = score + TIMER_stop();
-								STATE_OPTION_set(game_over);
-							}
-							break;
-				default:
-							break;
+
+
+		if (CAN_int_vect()){
+			//printf("MCP_CANINTF_IN: %2x\r\n",mcp2515_read(MCP_CANINTF));
+			//printf("MCP_EFLG_IN: %2x\r\n",mcp2515_read(MCP_EFLG));
+			CAN_read(&rec);
+			life_lost = rec.data[0];
+			if(lives > 1 && life_lost==1 && GAME_getOpt() == game){
+					score = score + TIMER_stop();
+					lives = lives - 1;
+					GAME_setOpt(gamePause);
+					MENU_printPause(lives,score);
+					}
+			else if (lives==1 && life_lost==1 && GAME_getOpt() == game){
+					score = score + TIMER_stop();
+					GAME_setOpt(gameOver);
+					}
 		}
-		_delay_ms(5);
-*/
 
 
-
-
-
-
-
-
-
-
-
-
-
-
+		//_delay_ms(5);
 
 
 

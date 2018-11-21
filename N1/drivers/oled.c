@@ -1,7 +1,8 @@
 // Alberto Dallolio - OLED
 
 #include "oled.h"
-#include "font_norm.h"
+//#include "font_norm.h"
+#include "fonts.h"
 #include "uart.h"
 #include "../misc/memory_mapping.h"
 #include "menu.h"

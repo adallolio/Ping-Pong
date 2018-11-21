@@ -10,7 +10,8 @@
 #include "spi.h"
 #include "mcp2515.h"
 
-
+/** MCP init function
+*/
 uint8_t mcp2515_Init(void) {
 	volatile uint8_t value;
 	
@@ -28,19 +29,24 @@ uint8_t mcp2515_Init(void) {
 	return 0;
 }
 
-
+/** MCP N1 select
+*/
 void mcp2515_N1_select(void) {
     // Select CAN-controller, pull CS low
     PORTB &= ~(1 << PB4);
 }
 
-
+/** MCP N1 deselect
+*/
 void mcp2515_N1_deselect(void) {
     // Deselect CAN-controller, pull CS high
     PORTB |= (1 << PB4);
 }
 
-
+/** MCP read via SPI
+    @param address address where to read
+    @return rec read value
+*/
 int mcp2515_read(uint8_t address) {
     uint8_t rec;
     mcp2515_N1_select();
@@ -52,7 +58,10 @@ int mcp2515_read(uint8_t address) {
     return rec;
 }
 
-
+/** MCP write via SPI
+    @param address address where to write
+    @param data data to write
+*/
 void mcp2515_write(uint8_t address, uint8_t data) {
     mcp2515_N1_select();
     SPI_Transcieve(MCP_WRITE);      // Send write instruction
@@ -61,7 +70,8 @@ void mcp2515_write(uint8_t address, uint8_t data) {
     mcp2515_N1_deselect();
 }
 
-
+/** MCP reset
+*/
 uint8_t mcp2515_reset(void) {
     mcp2515_N1_select();
     SPI_Transcieve(MCP_RESET);      // Send reset  instruction
@@ -70,14 +80,17 @@ uint8_t mcp2515_reset(void) {
     return 0;
 }
 
-
+/** MCP request to send
+    @param buffer buffer
+*/
 uint8_t mcp2515_request_to_send(uint8_t buffer) {
     mcp2515_N1_select();
     SPI_Transcieve(buffer);
     mcp2515_N1_deselect();
 }
 
-
+/** MCP read status
+*/
 uint8_t mcp2515_read_status(void) {
     uint8_t status;
     
@@ -89,7 +102,11 @@ uint8_t mcp2515_read_status(void) {
     return status;
 }
 
-
+/** MCP modify one bit
+    @param address address where to modify
+    @param mask mask
+    @param data data to write
+*/
 int mcp2515_bit_modify(uint8_t address, uint8_t mask, uint8_t data) {
     mcp2515_N1_select();
     SPI_Transcieve(MCP_BITMOD);       // Send bit modify command to MCP2515
