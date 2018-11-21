@@ -7,18 +7,6 @@
 #include <stdlib.h>
 #include <stdio.h>
 
-
-//volatile uint8_t rx_flag = 0;
-
-//Interrupt service routine for CAN bus
-/*
-ISR(INT0_vect) {
-	_delay_ms(10);
-	// Clear INT flag, set RX flag
-	CAN_int_vect();
-}
-*/
-
 enum interrupt_flags interrupt_flag = no_flag;
 
 ISR(INT0_vect){

@@ -11,7 +11,7 @@
 
 state state_ = menu;
 int speed;
-static int lives=0;
+int lives=0;
 
 menu_item_info *currMenu;
 menu_item_info *currChild;
@@ -36,9 +36,6 @@ menu_item_info mainMenu ={
 menu_item_info playGame = {
 	.name = "Play game",
 	.parent = &mainMenu,
-	//.child[0] = &scores,
-	//.child[0] = &normalSpeed,
-	//.child[1] = &fastSpeed,
 	.child_num = 0,
 	.fcnPoint = &GAME_playGame,
 };
@@ -55,22 +52,18 @@ menu_item_info scores ={
 menu_item_info settings ={
 	.name = "Settings",
 	.parent = &mainMenu,
-	//.child[0] = &clearScores,
 	.child[0] = &contrastLevel,
 	.child[1] = &invertScreen,
 	.child[2] = &livesToDeath,
-	//.child[3] = &gameSpeed,
 	.child_num = 3,
 };
 
 menu_item_info livesToDeath ={
 	.name = "Difficulty",
 	.parent = &settings,
-	//.child[0] = &clearScores,
 	.child[0] = &levelEasy,
 	.child[1] = &levelMedium,
 	.child[2] = &levelHard,
-	//.child[3] = &gameSpeed,
 	.child_num = 3,
 };
 
@@ -94,39 +87,6 @@ menu_item_info levelHard ={
 	.child_num = 0,
 	.fcnPoint = &GAME_levelHard,
 };
-
-/*
-menu_item_info gameSpeed ={
-	.name = "Game speed",
-	.parent = &settings,
-	.child[0] = &normalSpeed,
-	.child[1] = &fastSpeed,
-	.child_num = 2,
-};
-
-
-menu_item_info normalSpeed = {
-	.name = "Normal",
-	.parent = &settings,
-	.child_num = 0,
-	.fcnPoint = &GAME_normalSpeedFcn,
-};
-
-menu_item_info fastSpeed = {
-	.name = "Fast",
-	.parent = &settings,
-	.child_num = 0,
-	.fcnPoint = &GAME_fastSpeedFcn,
-};
-
-
-menu_item_info clearScores ={
-	.name = "Clear Scores",
-	.parent = &settings,
-	.child_num = 0,
-	//.fcnPoint = &HIGHSCORE_clear,
-};
-*/
 
 menu_item_info contrastLevel ={
 	.name = "Contrast level",
@@ -197,19 +157,25 @@ int MENU_printGame(){
 	return lives;
 }
 
+void MENU_configApplied(){
+	OLED_reset();
+	OLED_pos(3,30);
+	OLED_printf("Difficulty Set!");
+}
+
 void MENU_printGameOver(int score){
 	OLED_reset();
-	OLED_pos(3,35);
+	OLED_pos(1,35);
 	OLED_printf("Game over!");
-	OLED_pos(3,55);
+	OLED_pos(4,12);
 	OLED_printf("Your last score was %d !",score);
 }
 
 void MENU_printPause(int lives_left, int score){
 	OLED_reset();
-	OLED_pos(3, 10);
+	OLED_pos(1, 12);
 	OLED_printf("You have %d lives left!", lives_left);
-	OLED_pos(5, 10);
+	OLED_pos(4, 25);
 	OLED_printf("Your score is: %d", score);
 }
 
@@ -225,10 +191,10 @@ void MENU_printScore(int score){
 
 void MENU_printWarning(){
 	OLED_reset();
-	OLED_pos(3, 10);
-	OLED_printf("Set difficulty before playing!");
-	OLED_pos(5, 10);
-	OLED_printf("Press joystick to resume...");
+	OLED_pos(2,25);
+	OLED_printf("Set difficulty");
+	OLED_pos(3,25);
+	OLED_printf("before playing!");
 }
 
 void MENU_highlight(){
@@ -251,27 +217,15 @@ void MENU_select() {
 			MENU_print();
 		} else if (currChild->fcnPoint != NULL){
 			currChild->fcnPoint();
-			/*
-			if(currChild == &clearScores){
-				//MENU_print_cleared_highscores();
-				MENU_print();
-			}else if(currChild == &scores){
-				currMenu = currChild;
-				currChild = currChild->child[0];
-				line = 1;
-			}
-			*/
 		}
 		while(Joy_Button() || Joy_getDir() == EAST);
 	}
 }
 
-
-
 // Going EAST is not in navigation!
 void MENU_nav() {
 	switch (Joy_getDir()){
-		case WEST:
+		case WEST:	
 			if (currMenu->parent != NULL){
 				line = 1;
 				currMenu = currMenu->parent;
@@ -307,8 +261,10 @@ void MENU_nav() {
 }
 
 void GAME_playGame(){
-	if (lives=0){
+	if (lives==0){
 		MENU_printWarning();
+		_delay_ms(3000);
+		MENU_print();
 	} else{
 		GAME_setOpt(gameInit);
 	}
@@ -338,14 +294,17 @@ state GAME_getOpt(){
 
 void GAME_levelEasy(){
 	GAME_setLives(10);
+	MENU_configApplied();
 }
 
 void GAME_levelMedium(){
 	GAME_setLives(6);
+	MENU_configApplied();
 }
 
 void GAME_levelHard(){
 	GAME_setLives(3);
+	MENU_configApplied();
 }
 
 void GAME_setLives(int new_lives){

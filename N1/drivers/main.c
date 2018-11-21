@@ -5,8 +5,9 @@
 #include <avr/io.h>
 #include <util/delay.h>
 #include <avr/pgmspace.h>
-#include "uart.h"
+#include <stdio.h>
 #include <avr/interrupt.h>
+#include "uart.h"
 #include "adc.h"
 #include "joystick.h"
 #include "touch.h"
@@ -24,7 +25,7 @@
 
 int main(void) {
 
-	//cli();
+	cli();
 	//------------UART------------//
 	unsigned long cpu_speed = F_CPU;
     UART_Init(cpu_speed);				// Set clock speed
@@ -56,6 +57,8 @@ int main(void) {
 	int life_lost;
 	int score;
 
+	sei();
+
 	while(1){
 
 		switch (GAME_getOpt()){
@@ -66,13 +69,15 @@ int main(void) {
 				case gameInit:
 						//CAN_send(GAME_getOpt());
 						lives = MENU_printGame();
-						//lives = 3;
 						score = 0;
 						TIMER_start();
 						GAME_setOpt(game);
 						break;
 				case game:
+						//lives = MENU_printGame();
 						CAN_sendBunch();
+						score = score + TIMER_stop();
+						printf("SCORE: %d\r\n", score);
 						break;
 				case gamePause:
 						if(Joy_Button()){
@@ -92,10 +97,14 @@ int main(void) {
 						break;
 		}
 
+		//printf("MCP_CANINTF_OUT: %2x\r\n",mcp2515_read(MCP_CANINTF));
+		//printf("MCP_EFLG_OUT: %2x\r\n",mcp2515_read(MCP_EFLG));
+		//printf("MCP_CANSTAT_OUT: %2x\r\n",mcp2515_read(MCP_CANSTAT));
 
 		if (CAN_int_vect()){
 			//printf("MCP_CANINTF_IN: %2x\r\n",mcp2515_read(MCP_CANINTF));
 			//printf("MCP_EFLG_IN: %2x\r\n",mcp2515_read(MCP_EFLG));
+			//printf("MCP_CANSTAT_IN: %2x\r\n",mcp2515_read(MCP_CANSTAT));
 			CAN_read(&rec);
 			life_lost = rec.data[0];
 			if(lives > 1 && life_lost==1 && GAME_getOpt() == game){
@@ -111,7 +120,7 @@ int main(void) {
 		}
 
 
-		//_delay_ms(5);
+		_delay_ms(5);
 
 
 

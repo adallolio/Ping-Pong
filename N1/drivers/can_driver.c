@@ -5,8 +5,6 @@
 #include <stdio.h>
 
 #include "mcp2515.h"
-//#include "MCP_driver.h"
-//#include "spi.h"
 #include "can_driver.h"
 #include "joystick.h"
 #include "touch.h"
@@ -35,14 +33,14 @@ void CAN_init(void){
 
 
 	// Disable global interrupts
-	cli();
+	//cli();
 	// Interrupt on falling edge PD2
 	set_bit(MCUCR, ISC01);
 	clear_bit(MCUCR, ISC00);
 	// Enable interrupt on PD2
 	set_bit(GICR,INT0);
 	// Enable global interrupts
-    sei();
+    //sei();
 }
 
 // check if package in buffers
@@ -51,9 +49,9 @@ void CAN_init(void){
 uint8_t CAN_int_vect(){
     if (flag) {
         flag = 0;
-        return 0;
+        return 1;
     }
-    else return 1;
+    else return 0;
 }
 
 /*
@@ -90,12 +88,8 @@ void CAN_send(can_msg_t* msg){
     }
 
     mcp2515_request_to_send(MCP_RTS_TX0);
-    printf("sent:%d\r\n", msg->data[0]);
-}/** My function doing something...
-    @param param1 first parameter
-    @param param2 second parameter
-    @return value return value
-*/
+    //printf("sent:%d\r\n", msg->data[0]);
+}
 
 /** CAN read function
     @param can_msg_t* msg empty message to be filled
@@ -113,8 +107,6 @@ void CAN_read(can_msg_t* msg){
     for (uint8_t i = 0; i < msg->length ; i++){
         msg->data[i] = mcp2515_read(MCP_RXB0D0 + i);
     }
-
-    //return msg->data;
 
     //mcp2515_bit_modify(MCP_CANINTF, 1, 0); // set interupt vector 1 to 0
     //mcp2515_bit_modify(MCP_CANINTF, 1, 0); // set interupt vector 2 to 0
@@ -139,7 +131,7 @@ void CAN_slidersMsg(){
     can_msg_t msg;
     
     TOUCH_sliderPos slider_pos = TOUCH_getPos();
-    if(abs(slider_pos.slider_right - slider_pos_prev.slider_right) > 5 && abs(slider_pos.slider_left - slider_pos_prev.slider_left) > 5){
+    //if(abs(slider_pos.slider_right - slider_pos_prev.slider_right) > 5 || abs(slider_pos.slider_left - slider_pos_prev.slider_left) > 5){
         msg.id = SLIDERS_ID;
         //msg.data[0] = CAN_SLIDERS_POS;
         msg.data[0] = slider_pos.slider_left;
@@ -147,8 +139,8 @@ void CAN_slidersMsg(){
         msg.data[1] = slider_pos.slider_right;
         msg.length = 2;
         CAN_send(&msg);
-        slider_pos_prev = slider_pos;
-    }
+        //slider_pos_prev = slider_pos;
+    //}
 }
 
 /** CAN build and send a joystick message

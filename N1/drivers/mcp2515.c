@@ -10,8 +10,7 @@
 #include "spi.h"
 #include "mcp2515.h"
 
-/** MCP init function
-*/
+
 uint8_t mcp2515_Init(void) {
 	volatile uint8_t value;
 	

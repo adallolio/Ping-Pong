@@ -4,7 +4,7 @@
 typedef struct {
     volatile unsigned short int id;
     volatile unsigned char length;
-    volatile int data[8];
+    volatile uint8_t data[8];
     //int id;
 	//uint8_t length;
 	//int8_t data[8];

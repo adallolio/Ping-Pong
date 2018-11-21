@@ -7,18 +7,23 @@
 int time_curr = 0;
 
 ISR(TIMER1_COMPA_vect){
+	//printf("time:%d\r\n", time_curr);
 	time_curr = time_curr + 1;
 }
 
 void TIMER_init(){
+	//cli();
+	
 	//CTC mode
 	TCCR1B |= (1 << WGM12);
-	
+
 	// Prescaler = 256
 	TCCR1B |= (1 << CS12);
 	
 	// Set output compare value
 	OCR1A = 0x4B00;		// 19200 - corresponds to match every second: 1Hz = 4915200/256/(OCR1A-1)
+
+	//sei();
 }
 
 void TIMER_start(){
