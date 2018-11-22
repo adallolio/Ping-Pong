@@ -2,9 +2,9 @@
 #define CAN_DRIVER_H_
 
 typedef struct {
-    volatile unsigned short int id;
+    volatile int id;
     volatile unsigned char length;
-    volatile int data[8];
+    volatile uint8_t data[8];
     //int id;				// 5 bytes for standard identifier
 	//uint8_t length;		// Number of data bytes
 	//int8_t data[8];

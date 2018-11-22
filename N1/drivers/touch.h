@@ -13,7 +13,8 @@ typedef struct Slider_pos {
 	} TOUCH_sliderPos;
 
 void TOUCH_Init();
-int TOUCH_Button();
+int TOUCH_ButtonL();
+int TOUCH_ButtonR();
 TOUCH_sliderPos TOUCH_Read();
 TOUCH_sliderPos TOUCH_getPos();
 

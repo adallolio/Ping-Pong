@@ -45,8 +45,12 @@ int main(void) {
 	
 	//------------CAN INIT------------//
 	CAN_init();
-	can_msg_t send;
 	can_msg_t rec;
+
+	can_msg_t send;
+	send.id = 1;
+	send.length = 1;
+	send.data[0] = 4;
 
 	//------------TIMER INIT------------//
 	TIMER_init();
@@ -76,8 +80,8 @@ int main(void) {
 				case game:
 						//lives = MENU_printGame();
 						CAN_sendBunch();
-						score = score + TIMER_stop();
-						printf("SCORE: %d\r\n", score);
+						//score = score + TIMER_stop();
+						//printf("SCORE: %d\r\n", score);
 						break;
 				case gamePause:
 						if(Joy_Button()){
@@ -97,14 +101,7 @@ int main(void) {
 						break;
 		}
 
-		//printf("MCP_CANINTF_OUT: %2x\r\n",mcp2515_read(MCP_CANINTF));
-		//printf("MCP_EFLG_OUT: %2x\r\n",mcp2515_read(MCP_EFLG));
-		//printf("MCP_CANSTAT_OUT: %2x\r\n",mcp2515_read(MCP_CANSTAT));
-
 		if (CAN_int_vect()){
-			//printf("MCP_CANINTF_IN: %2x\r\n",mcp2515_read(MCP_CANINTF));
-			//printf("MCP_EFLG_IN: %2x\r\n",mcp2515_read(MCP_EFLG));
-			//printf("MCP_CANSTAT_IN: %2x\r\n",mcp2515_read(MCP_CANSTAT));
 			CAN_read(&rec);
 			life_lost = rec.data[0];
 			if(lives > 1 && life_lost==1 && GAME_getOpt() == game){
@@ -119,28 +116,12 @@ int main(void) {
 					}
 		}
 
-
-		_delay_ms(5);
-
-
-
-
-
-
-
-
-
-
-		//printf("MCP_CANINTF_OUT: %2x\r\n",mcp2515_read(MCP_CANINTF));
-		//printf("MCP_EFLG_OUT: %2x\r\n",mcp2515_read(MCP_EFLG));
-		//printf("MCP_CANSTAT_OUT: %2x\r\n",mcp2515_read(MCP_CANSTAT));
+//                             CAN TEST IN LOOPBACK MODE
 /*
-		sliders = TOUCH_getPos();
-		printf("LEFT: %d\r\n", sliders.slider_left);
-		_delay_ms(20);
-		printf("RIGHT: %d\r\n", sliders.slider_right);
-		_delay_ms(500);
-
+		CAN_send(&send);
+		printf("MCP_CANINTF: %2x\r\n",mcp2515_read(MCP_CANINTF));
+		printf("MCP_EFLG: %2x\r\n",mcp2515_read(MCP_EFLG));
+		printf("MCP_CANSTAT: %2x\r\n",mcp2515_read(MCP_CANSTAT));
 		if (CAN_int_vect()){
 			//printf("MCP_CANINTF_IN: %2x\r\n",mcp2515_read(MCP_CANINTF));
 			//printf("MCP_EFLG_IN: %2x\r\n",mcp2515_read(MCP_EFLG));
@@ -148,6 +129,9 @@ int main(void) {
 			_delay_ms(500);
 		}
 */
+
+
+
 	}
 
 	return 0;

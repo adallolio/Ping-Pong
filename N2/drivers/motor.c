@@ -15,7 +15,7 @@ int16_t encoder_max;
 
 void MOTOR_init(){
 	
-
+/*
 	// Set MJ1 pins as output
 	// PH4 = EN, PH1 = DIR, PH3 = SEL, PH5 = !OE, PH6 = RST
 	DDRH |= (1 << PH4) | (1 << PH1) | (1 << PH3) | (1 << PH5) | (1 << PH6);
@@ -28,8 +28,9 @@ void MOTOR_init(){
 
 	// Reset encoder
 	MOTOR_encoderReset();
+	
+*/
 
-/*
 	// Enable motor
 	set_bit(DDRH, PH4);
 	set_bit(PORTH, PH4);
@@ -56,8 +57,8 @@ void MOTOR_init(){
 	clear_bit(DDRK, PK5);
 	clear_bit(DDRK, PK6);
 	clear_bit(DDRK, PK7);	
-*/
 
+	MOTOR_encoderReset();
 }
 
 
@@ -84,15 +85,17 @@ void MOTOR_setSpeed(uint8_t speed){
 		vel = vel_max;
 	}
 
+	//printf("vel:%d\r\n",vel);
+
 	DAC_send(vel);
 
 /*
 	if(speed > 126){ //Limits speed based on direction
-		motorDir(EAST);
+		MOTOR_setDir(EAST);
 		DAC_send(speed-127);
 		
 	} else{
-		motorDir(WEST);
+		MOTOR_setDir(WEST);
 		DAC_send(126-speed);
 	}
 */
@@ -142,13 +145,24 @@ int16_t MOTOR_rotRead(void){
 	
 	int16_t rot = (int16_t) ( (MSB << 8) | LSB);
 	
+	printf("ROT: %d\r\n",rot);
 	return rot;
 }
 
 
-int MOTOR_rotScaled(){
+int MOTOR_rotScaled(void){
 	// Scaled between 0 and 255
-	float val = (float)MOTOR_rotRead()/encoder_max * 0xFF; 
+	float enc_min = -4200;
+	float enc_max = 4200;
+	float range_min = 0;
+	float range_max = 255;
+	float val = ((float)MOTOR_rotRead()-enc_min)*((range_max-range_min)/(enc_max-enc_min))+range_min;
+	if(val<0) {
+		val = 0.0;
+	} else if(val>255) {
+		val = 255.0;
+	}
+	printf("ROT SCALED: %f\r\n",val);
 	return (int)val;
 }
 
@@ -161,6 +175,7 @@ void MOTOR_cal(void){
 	_delay_ms(2000);
 	MOTOR_setSpeed(0);
 	
+
 	// Reset encoder
 	MOTOR_encoderReset();
 	
@@ -170,6 +185,8 @@ void MOTOR_cal(void){
 	_delay_ms(2000);
 	MOTOR_setSpeed(0);
 	encoder_max = MOTOR_rotRead();
+
+
 
 /*
 	MOTOR_setDir(WEST);
@@ -205,5 +222,5 @@ void MOTOR_cal(void){
 
 
 void MOTOR_encoderTest(void){
-	printf("Encoder: %d\r\n", MOTOR_rotRead());
+	//printf("Encoder: %d\r\n", MOTOR_rotRead());
 }

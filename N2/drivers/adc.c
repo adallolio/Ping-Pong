@@ -45,7 +45,7 @@ uint16_t ADC_channelRead(ADC_ch ch){
 			clear_bit(ADMUX,MUX0);
 			clear_bit(ADMUX,MUX1);
 			return ADC_read();
-		case(JOY_SL_L):
+		case(JOY_AX):
 			clear_bit(ADMUX,MUX0);
 			set_bit(ADMUX,MUX1); 
 			return ADC_read();

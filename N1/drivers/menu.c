@@ -209,7 +209,7 @@ void MENU_highlight(){
 
 // Going EAST selects.
 void MENU_select() {
-	if ((Joy_Button() || Joy_getDir() == EAST) && currChild!= NULL){
+	if ((TOUCH_ButtonL() || Joy_getDir() == EAST) && currChild!= NULL){
 		if (currChild->child[0] != NULL){
 			currMenu = currChild;
 			currChild = currChild->child[0];
@@ -218,7 +218,7 @@ void MENU_select() {
 		} else if (currChild->fcnPoint != NULL){
 			currChild->fcnPoint();
 		}
-		while(Joy_Button() || Joy_getDir() == EAST);
+		while(TOUCH_ButtonL() || Joy_getDir() == EAST);
 	}
 }
 
@@ -316,23 +316,3 @@ void GAME_levelHard(){
 void GAME_setLives(int new_lives){
 	lives = new_lives;
 }
-
-/*
-void GAME_setSpeedOpt(int new_speed){
-	speed = new_speed;
-}
-
-int GAME_getSpeedOpt(){
-	return speed;
-}
-
-void GAME_normalSpeedFcn(){
-	GAME_setSpeedOpt(1); 
-	GAME_setOpt(gameInit);
-}
-
-void GAME_fastSpeedFcn(){
-	GAME_setSpeedOpt(2);
-	GAME_setOpt(gameInit);
-}
-*/

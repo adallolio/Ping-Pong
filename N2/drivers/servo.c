@@ -29,15 +29,20 @@ void set_servo(uint8_t servo_dir){
 	float servo_pw;
 	float dir;
 
-	if(servo_dir>160){
+	if(servo_dir>=170){
 		servo_pw = max_pw;
-	} else if(servo_dir<50) {
-		servo_pw = min_pw;
-	} else {
-		dir = (float)servo_dir;
+	} else if(servo_dir<170 && servo_dir>=85) {
+		dir = (float)128;
 		servo_pw = (dir/max)*(max_pw-min_pw)+min_pw;
-		//float servo_pw = dir/211666.7 + 0.0009;  // Convert joystick 0-255 position value to between min_pw and max_pw
+	} else if(servo_dir<85){
+		servo_pw = min_pw;
 	}
+
+	//dir = (float)servo_dir;
+	//servo_pw = (dir/max)*(max_pw-min_pw)+min_pw;
+	
+
+	//float servo_pw = dir/211666.7 + 0.0009;  // Convert joystick 0-255 position value to between min_pw and max_pw
 
 	printf("servo: %f \n\r", servo_pw);
 

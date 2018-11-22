@@ -13,7 +13,7 @@
 
 typedef enum ADC_channel {
 	IR = 0,
-	JOY_SL_L = 1,
+	JOY_AX = 1,
 	JOY_SL_R = 2
 } ADC_ch;
 

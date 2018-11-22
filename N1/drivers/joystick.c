@@ -36,6 +36,7 @@ Joy_position Joy_Read(){
 	pos.x = ADC_Read('x');
 	//printf("X position: %d\n\r", pos.x);
 	//printf("Y position: %d\n\r", pos.y);
+	//_delay_ms(200);
 	
 	return pos;
 }

@@ -118,5 +118,6 @@ int PID_ref(uint8_t ref){
 	int new_ref;
 	// 255 is max right, 0 is max left.
 	new_ref = abs(ref - 0xFF); 
+	printf("NEW REF: %d\r\n", new_ref);
 	return new_ref;
 }

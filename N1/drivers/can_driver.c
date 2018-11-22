@@ -27,20 +27,13 @@ void CAN_init(void){
     mcp2515_Init();
     mcp2515_write(MCP_CANINTE, MCP_RX_INT);
 
-    //printf("Initializing CAN driver...\n\r");
-    //_delay_ms(1000);
-    mcp2515_write(MCP_CANCTRL, MODE_NORMAL);
+    mcp2515_write(MCP_CANCTRL, MODE_LOOPBACK);
 
-
-	// Disable global interrupts
-	//cli();
 	// Interrupt on falling edge PD2
 	set_bit(MCUCR, ISC01);
 	clear_bit(MCUCR, ISC00);
 	// Enable interrupt on PD2
 	set_bit(GICR,INT0);
-	// Enable global interrupts
-    //sei();
 }
 
 // check if package in buffers
@@ -54,15 +47,24 @@ uint8_t CAN_int_vect(){
     else return 0;
 }
 
+int CAN_transmit_complete(void) {
+    //Check if TX buffer is not pending transmission (TXREQ = 0, where TXREQ is bit 3 of TXBOCTRL)
+    if (test_bit(mcp2515_read(MCP_TXB0CTRL), 3)) {
+        // not ready to send
+        return 0;
+    } else {
+        // ready to send
+        return 1;
+    }
 /*
-uint8_t CAN_transmit_complete(){
     uint8_t flag = mcp2515_read(MCP_CANINTF);
     if ((flag & (MCP_TX0IF)) == MCP_TX0IF){
         return 0;
     }
     return 1;
-}
 */
+}
+
 
 /* BASIC SEND AND RECEIVE FUNCTIONS */
 
@@ -71,24 +73,26 @@ uint8_t CAN_transmit_complete(){
 */
 void CAN_send(can_msg_t* msg){
 
-    /* Arbitration field; set ID and length */
-    char id_high = msg->id >> 3;
-    char id_low = msg->id << 5;
-    uint8_t length = msg->length;
+    if (CAN_transmit_complete()==1) {
+        /* Arbitration field; set ID and length */
+        char id_high = msg->id >> 3;
+        char id_low = msg->id << 5;
+        uint8_t length = msg->length;
 
-    mcp2515_write(MCP_TXB0SIDH, id_high);
-    mcp2515_write(MCP_TXB0SIDL, id_low);
-    mcp2515_write(MCP_TXB0DLC, length);
-    mcp2515_write(MCP_TXB0EID8, 0);
-    mcp2515_write(MCP_TXB0EID0, 0);
+        mcp2515_write(MCP_TXB0SIDH, id_high);
+        mcp2515_write(MCP_TXB0SIDL, id_low);
+        mcp2515_write(MCP_TXB0DLC, length);
+        mcp2515_write(MCP_TXB0EID8, 0);
+        mcp2515_write(MCP_TXB0EID0, 0);
 
-    // Set data
-    for (uint8_t i = 0; i<length; i++) {
-        mcp2515_write(MCP_TXB0D0 + i , msg->data[i]);
+        // Set data
+        for (uint8_t i = 0; i<length; i++) {
+            mcp2515_write(MCP_TXB0D0 + i , msg->data[i]);
+        }
+
+        mcp2515_request_to_send(MCP_RTS_TX0);
+        printf("sent:%d\r\n", msg->id);
     }
-
-    mcp2515_request_to_send(MCP_RTS_TX0);
-    //printf("sent:%d\r\n", msg->data[0]);
 }
 
 /** CAN read function
@@ -111,7 +115,7 @@ void CAN_read(can_msg_t* msg){
     //mcp2515_bit_modify(MCP_CANINTF, 1, 0); // set interupt vector 1 to 0
     //mcp2515_bit_modify(MCP_CANINTF, 1, 0); // set interupt vector 2 to 0
 
-    printf("received:%d\r\n", msg->data[0]);
+    printf("received:%d\r\n", msg->id);
 }
 
 
@@ -131,16 +135,13 @@ void CAN_slidersMsg(){
     can_msg_t msg;
     
     TOUCH_sliderPos slider_pos = TOUCH_getPos();
-    //if(abs(slider_pos.slider_right - slider_pos_prev.slider_right) > 5 || abs(slider_pos.slider_left - slider_pos_prev.slider_left) > 5){
+    if(abs(slider_pos.slider_right - slider_pos_prev.slider_right) > 5){
         msg.id = SLIDERS_ID;
-        //msg.data[0] = CAN_SLIDERS_POS;
-        msg.data[0] = slider_pos.slider_left;
-        //msg.data[2] = CAN_SLIDER_POS_R;
-        msg.data[1] = slider_pos.slider_right;
-        msg.length = 2;
+        msg.data[0] = slider_pos.slider_right;
+        msg.length = 1;
         CAN_send(&msg);
-        //slider_pos_prev = slider_pos;
-    //}
+        slider_pos_prev = slider_pos;
+    }
 }
 
 /** CAN build and send a joystick message
@@ -152,7 +153,6 @@ void CAN_joyMsg(){
     Joy_position joy_pos = Joy_Read();
     if(abs(joy_pos.x - joy_pos_prev.x) > 5){
         msg.id = JOYSTICK_ID;
-        //msg.data[0] = CAN_JOY_POS_X;
         msg.data[0] = joy_pos.x;
         msg.length = 1;
         CAN_send(&msg);
@@ -166,7 +166,7 @@ void CAN_butt(){
     static int button_pressed_prev;
     can_msg_t msg;
     
-    int button_pressed = TOUCH_Button();
+    int button_pressed = TOUCH_ButtonR();
     if(button_pressed == 1 && button_pressed_prev == 0){
         msg.id = TOUCH_BUTTON_ID;
         //msg.data[0] = CAN_TOUCH_BUTTON;

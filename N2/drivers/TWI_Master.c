@@ -96,7 +96,7 @@ void TWI_Start_Transceiver_With_Data( unsigned char *msg, unsigned char msgSize 
          (0<<TWEA)|(1<<TWSTA)|(0<<TWSTO)|       // Initiate a START condition.
          (0<<TWWC);                             //
 
-  //printf("YUHUUU\r\n");         
+  printf("YUHUUU\r\n");         
 }
 
 /****************************************************************************

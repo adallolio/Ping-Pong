@@ -20,14 +20,28 @@ void TOUCH_Init() {
 	//printf("Touch Initialized!\n\r");
 }
 
-int TOUCH_Button() {	
+int TOUCH_ButtonL() {	
 	/*
 	if (test_bit(PINB, PB1) || test_bit(PINB, PB2)){
 		return 1;
 	}
 	*/
 
-	if( (PINB & (1 << PB1)) || (PINB & (1 << PB2)) ) {
+	if(PINB & (1 << PB1)) {
+		return 1;
+	}
+
+	return 0;
+}
+
+int TOUCH_ButtonR() {	
+	/*
+	if (test_bit(PINB, PB1) || test_bit(PINB, PB2)){
+		return 1;
+	}
+	*/
+
+	if(PINB & (1 << PB2)) {
 		return 1;
 	}
 

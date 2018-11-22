@@ -5,6 +5,7 @@
 #include <util/delay.h>
 #include <avr/interrupt.h>
 #include <stdint.h>
+#include <stdlib.h>
 #include "../misc/bit_manipulation.h"
 #include "../misc/macros.h"
 #include "uart.h"
@@ -19,10 +20,12 @@
 #include "motor.h"
 #include "dac.h"
 #include "pid.h"
+#include "TWI_Master.h"
 
 
 int main(void) {
 	
+	cli();
 	//------------UART INIT------------//
 	unsigned long cpu_speed = F_CPU;
     UART_Init(cpu_speed);
@@ -31,8 +34,10 @@ int main(void) {
     //------------ADC INIT------------//
 	ADC_init();
 
+
 	//------------CAN INIT------------//
 	CAN_init();
+	can_msg_t send;
 	can_msg_t rec;
 	int msg_type;
 
@@ -53,19 +58,35 @@ int main(void) {
 	int pos_reference = 127;
 
 	//------------MOTOR CALIBRATION------------//
-	MOTOR_cal();
+	//MOTOR_cal();
 
 	//------------PID INIT------------//
 	PID_init();
-	PID_ref(pos_reference);
+	//PID_ref(pos_reference);
 
+	sei();
 
 	//int lives = 10;
 
 	while(1){
 
+		_delay_ms(5000);
+		CAN_sendIR(1);
+		
+		//MOTOR_encoderTest();
+		//MOTOR_rotScaled();
+		//PID_ref(0);
+		//ADC_channelRead(IR);
+		//ADC_channelRead(JOY_AX);
+		//pos_reference = PID_ref(127);
+		//MOTOR_setSpeed(10);
+		//set_servo(ADC_channelRead(JOY_SL_R));
+
+		
+/*
 		if (CAN_int_vect()){
 			CAN_read(&rec);
+
 			msg_type = rec.id;
 			switch(msg_type){
 				case JOYSTICK_ID:
@@ -80,12 +101,13 @@ int main(void) {
 				default:
 					break;
 			}
+
 		}
 
-/*
 		ir = IR_check();
 		CAN_sendIR(ir);
-		
+
+
 		rot = MOTOR_rotScaled();
 		if(rot < 0){
 			rot = 0;
@@ -94,51 +116,20 @@ int main(void) {
 			rot = 255;
 		}
 		
-		PID(rot, pos_reference);
+		//PID(rot, pos_reference);
 */
 	}
 
 
-
-		//-------------IR GAME TEST-------------//
-		
-		//ADC_channelRead(IR);
-/*	
-		if (lives>1){
-			lives = IR_inGame(lives);
-		}
-		else{
-			printf("Game over!\r\n");
-			break;
-		}
-*/
-
-		//-------------PWM/SERVO TEST-------------//
-
-		//set_servo(ADC_channelRead(JOY_SL));
-		//motorSpeed(ADC_channelRead(JOY_SL1));
-		
-		//motorSpeed(ADC_channelRead(JOY_SL_L));
-		//PID(ADC_channelRead(JOY_SL_L));
-		//PID(130);
-		//motorSpeed(126);
-		//_delay_ms(20);
-		//set_servo(ADC_channelRead(JOY_SL_R));
-		//ADC_channelRead(JOY_SL2);
-		//_delay_ms(500);
-
-		//-------------CAN TEST-------------//
+//                             CAN TEST IN LOOPBACK MODE
 /*
 		CAN_send(&send);
-		printf("MCP_CANINTF_OUT: %2x\r\n",mcp2515_read(MCP_CANINTF));
-		printf("MCP_EFLG_OUT: %2x\r\n",mcp2515_read(MCP_EFLG));
-		//printf("MCP_CANINTF: %2x\r\n",mcp2515_read(MCP_CANINTF));
-		//printf("MCP_EFLG: %2x\r\n",mcp2515_read(MCP_EFLG));
-		_delay_ms(500);
+		printf("MCP_CANINTF: %2x\r\n",mcp2515_read(MCP_CANINTF));
+		printf("MCP_EFLG: %2x\r\n",mcp2515_read(MCP_EFLG));
+		printf("MCP_CANSTAT: %2x\r\n",mcp2515_read(MCP_CANSTAT));
 		if (CAN_int_vect()){
-			//printf("MCP_CANINTF: %2x\r\n",mcp2515_read(MCP_CANINTF));
-			//printf("MCP_EFLG: %2x\r\n",mcp2515_read(MCP_EFLG));
-			//printf("MCP_CANSTAT: %2x\r\n",mcp2515_read(MCP_CANSTAT));
+			//printf("MCP_CANINTF_IN: %2x\r\n",mcp2515_read(MCP_CANINTF));
+			//printf("MCP_EFLG_IN: %2x\r\n",mcp2515_read(MCP_EFLG));
 			CAN_read(&rec);
 			_delay_ms(500);
 		}
