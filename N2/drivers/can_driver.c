@@ -82,21 +82,21 @@ void CAN_send(can_msg_t* msg){
     printf("sent:%d\r\n", msg->data[0]);
 }
 
-void CAN_read(can_msg_t* msg_read){
+void CAN_read(can_msg_t* msg){
     uint8_t id_high = mcp2515_read(MCP_RXB0SIDH);
     uint8_t id_low = mcp2515_read(MCP_RXB0SIDL);
 
-    msg_read->length = mcp2515_read(MCP_RXB0DLC);
+    msg->length = mcp2515_read(MCP_RXB0DLC);
 
     id_high = id_high << 3;
     id_low = id_low >> 5;
-    msg_read->id =  id_high + id_low;
+    msg->id =  id_high + id_low;
 
-    for (uint8_t i = 0; i < msg_read->length ; i++){
-        msg_read->data[i] = mcp2515_read(MCP_RXB0D0 + i);
+    for (uint8_t i = 0; i < msg->length ; i++){
+        msg->data[i] = mcp2515_read(MCP_RXB0D0 + i);
     }
 
-    printf("received:%d\r\n", msg_read->data[0]);
+    printf("received:%d\r\n", msg->id);
 
     //mcp2515_bit_modify(MCP_CANINTF, 1, 0); // set interrupt vector 1 to 0
     //mcp2515_bit_modify(MCP_CANINTF, 1, 0); // set interrupt vector 2 to 0

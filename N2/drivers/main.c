@@ -82,7 +82,7 @@ int main(void) {
 			}
 		}
 
-
+/*
 		ir = IR_check();
 		CAN_sendIR(ir);
 		
@@ -95,6 +95,7 @@ int main(void) {
 		}
 		
 		PID(rot, pos_reference);
+*/
 	}
 
 
